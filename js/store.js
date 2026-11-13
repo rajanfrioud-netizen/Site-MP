@@ -121,12 +121,27 @@ export function normalize(raw) {
 
 export async function importData(raw) {
   const { state: s, images } = normalize(raw);
-  await imgClear();
-  for (const im of images) await imgPut(im.key, im.data);
+  // Les photos vont dans IndexedDB ; si le navigateur le refuse (navigation privée…),
+  // on importe quand même tout le reste.
+  let saved = 0;
+  try {
+    await imgClear();
+    for (const im of images) { await imgPut(im.key, im.data); saved++; }
+  } catch (e) {
+    console.warn('Photos non importées', e);
+  }
+  if (saved < images.length) {
+    for (const m of s.mistakes) { m.hasFront = false; m.hasBack = false; }
+    for (const im of images.slice(0, saved)) {
+      const [id, side] = im.key.split(':');
+      const m = s.mistakes.find((x) => x.id === id);
+      if (m) m['has' + side] = true;
+    }
+  }
   state = s;
   state.settings.onboarded = true;
   save({ touch: false });
-  return { ...counts(), images: images.length };
+  return { ...counts(), images: saved, imagesLost: images.length - saved };
 }
 
 export const counts = () => ({

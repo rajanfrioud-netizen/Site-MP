@@ -10,22 +10,56 @@ export async function downloadBackup() {
   toast('Sauvegarde téléchargée');
 }
 
+/** Lit un fichier de sauvegarde et remplace les données. */
+export async function importFile(f, after) {
+  if (!f) return;
+  toast('Lecture de la sauvegarde…');
+  let raw;
+  try {
+    const text = (await f.text()).replace(/^\uFEFF/, '');
+    raw = JSON.parse(text);
+  } catch {
+    alert(`« ${f.name} » n’est pas un fichier JSON lisible. Choisis le fichier exporté par le cockpit (par exemple MPSI_Cockpit_2026-11-12.json).`);
+    return;
+  }
+  try {
+    const c = counts();
+    if ((c.ds || c.kholles || c.mistakes || c.tasks) && !confirm('Remplacer toutes les données actuelles par celles du fichier ?')) return;
+    const r = await importData(raw);
+    toast(`Importé : ${r.ds} DS, ${r.kholles} khôlles, ${r.mistakes} fiches (${r.images} photos), ${r.tasks} tâches`);
+    if (r.imagesLost) alert(`${r.imagesLost} photo(s) n’ont pas pu être enregistrées : ce navigateur bloque le stockage (navigation privée ?). Le reste est importé.`);
+    after?.();
+  } catch (e) {
+    alert('Import impossible : ' + (e.message || e));
+  }
+}
+
+// Le sélecteur de fichier doit rester dans la page : Safari ignore un champ détaché
+// et ne déclenche jamais « change ».
+let picker;
 export function importPicker(after) {
-  const input = h('input', { type: 'file', accept: '.json,application/json', onchange: async () => {
-    const f = input.files[0];
+  picker?.remove();
+  picker = h('input', { type: 'file', 'aria-hidden': 'true', tabindex: '-1', style: { position: 'fixed', left: '-1000px', top: '0', opacity: '0' } });
+  picker.addEventListener('change', () => {
+    const f = picker.files && picker.files[0];
+    picker.value = '';
+    importFile(f, after);
+  });
+  document.body.append(picker);
+  picker.click();
+}
+
+/** Accepte aussi un fichier glissé-déposé sur la page. */
+export function enableDrop(after) {
+  if (enableDrop.done) return;
+  enableDrop.done = true;
+  window.addEventListener('dragover', (e) => { if ([...(e.dataTransfer?.types || [])].includes('Files')) e.preventDefault(); });
+  window.addEventListener('drop', (e) => {
+    const f = e.dataTransfer?.files?.[0];
     if (!f) return;
-    try {
-      const raw = JSON.parse(await f.text());
-      const c = counts();
-      if ((c.ds || c.kholles || c.mistakes || c.tasks) && !confirm('Remplacer toutes les données actuelles par celles du fichier ?')) return;
-      const r = await importData(raw);
-      toast(`Importé : ${r.ds} DS, ${r.kholles} khôlles, ${r.mistakes} fiches (${r.images} photos), ${r.tasks} tâches`);
-      after?.();
-    } catch (e) {
-      alert('Import impossible : ' + (e.message || e));
-    }
-  } });
-  input.click();
+    e.preventDefault();
+    importFile(f, after);
+  });
 }
 
 export function applyTheme() {

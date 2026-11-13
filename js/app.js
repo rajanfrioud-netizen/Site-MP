@@ -12,7 +12,7 @@ import { programme } from './views/programme.js';
 import { annales } from './views/annales.js';
 import { focus } from './views/focus.js';
 import { concours } from './views/concours.js';
-import { reglages, applyTheme, importPicker } from './views/reglages.js';
+import { reglages, applyTheme, importPicker, enableDrop } from './views/reglages.js';
 
 const ROUTES = [
   { path: '', label: 'Aujourd’hui', icon: 'home', view: dashboard, main: true },
@@ -102,7 +102,7 @@ function onboarding() {
         { name: 'concoursName', label: 'Concours visé', value: s.concoursName },
         { name: 'concoursDate', label: 'Premier jour des écrits', type: 'date', hint: 'Tu pourras le changer dans les réglages' },
       ], (v) => { Object.assign(s, v, { onboarded: true }); save(); }, { submitLabel: 'Commencer' }) }, 'Partir de zéro')),
-    h('p.muted', 'L’import reprend les fichiers « MPSI Cockpit » : notes, khôlles, fiches et photos, tâches. Tes données restent sur cet appareil.')));
+    h('p.muted', 'L’import reprend les fichiers « MPSI Cockpit » : notes, khôlles, fiches et photos, tâches. Sur ordinateur, tu peux aussi glisser le fichier sur cette page. Tes données restent sur cet appareil.')));
 }
 
 load();
@@ -110,6 +110,7 @@ applyTheme();
 subscribe(render);
 onTick(drawChip);
 window.addEventListener('hashchange', render);
+enableDrop(() => render());
 render();
 
 if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
