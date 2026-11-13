@@ -1,6 +1,6 @@
 import { state, save, streak } from '../store.js';
 import { h, icon, today, fmtDate, fmtRel, fmtNum, fmtMin, diffDays, weekStart, subj, subjTag, uid, formModal, gradeClass, schoolYearStart, addDays } from '../util.js';
-import { countdown, graded, upcoming, bySubject, avg, insights, openTasks, focusMinutes, weighted, dsAverages } from '../stats.js';
+import { countdown, graded, upcoming, bySubject, avg, insights, openTasks, focusMinutes, weighted, dsAverages, coursKnown } from '../stats.js';
 import { dueQueue } from '../srs.js';
 import { lineChart, activityGrid } from '../charts.js';
 import { vacanceOf, VACANCES } from '../data.js';
@@ -38,12 +38,15 @@ export function dashboard(root) {
   const lastWith = nextK && state.kholles.filter((k) => k.examiner === nextK.examiner && k.grade != null).sort((a, b) => b.date.localeCompare(a.date))[0];
 
   const step = (ic, title, text, href, cls = '') => h('a.step' + cls, { href }, h('span.step-ic', icon(ic)), h('span', h('b', title), h('small', text)), icon('right', 16));
+  const ck = coursKnown();
   const plan = h('section.card', h('h2', 'Aujourd’hui'));
   const steps = h('div.steps');
   if (due.length) {
     const n = Math.min(due.length, state.settings.reviewLimit);
     steps.append(step('cards', `Revoir ${n} fiche${n > 1 ? 's' : ''} d’erreur`, due.length > n ? `${due.length} en attente — ${n} aujourd’hui, environ ${Math.ceil(n * 0.75)} min` : `Environ ${Math.max(1, Math.ceil(n * 0.75))} min`, '#/erreurs/revision', '.accent'));
   }
+  const lastI = state.interros.at(-1)?.date;
+  if (lastI !== t) steps.append(step('book', 'Interro de cours : 10 points', lastI ? `Dernière ${fmtRel(lastI)} · ${ck.ok} points sus sur ${ck.total}` : `Récite ton cours comme en khôlle · ${ck.ok} points sus sur ${ck.total}`, '#/programme/interro'));
   if (nextK) {
     const n = diffDays(nextK.date, t);
     steps.append(step('mic', `Khôlle de ${subj(nextK.subject).short.toLowerCase()} ${fmtRel(nextK.date)}${nextK.time ? ' à ' + nextK.time.replace(':', ' h ') : ''}`,
@@ -74,6 +77,7 @@ export function dashboard(root) {
     tile('Moyenne DS', fmtNum(avg(ds)), `${ds.length} devoirs depuis septembre`, '.' + gradeClass(avg(ds))),
     tile('Pondérée concours', fmtNum(w), 'selon tes coefficients', '.' + gradeClass(w)),
     tile('Moyenne khôlles', fmtNum(avg(kh)), `${kh.length} khôlles notées`, '.' + gradeClass(avg(kh))),
+    tile('Cours su', `${Math.round((ck.ok / ck.total) * 100)} %`, `${ck.ok} points sur ${ck.total}`, ''),
     tile('Série', `${streak()} j`, 'jours d’affilée', ''),
     tile('Chrono cette semaine', wkMin ? fmtMin(wkMin) : '0 min', 'temps de travail mesuré')));
 

@@ -2,7 +2,8 @@ import { state } from '../store.js';
 import { h, icon, today, fmtDate, fmtRel, fmtNum, subj, subjTag, gradeClass, empty, schoolYearStart, mean, diffDays } from '../util.js';
 import { graded, upcoming, ungraded, bySubject, avg, trend, weighted, dsAverages } from '../stats.js';
 import { lineChart, hbars } from '../charts.js';
-import { editDS, editKholle } from '../forms.js';
+import { editDS, editKholle, planDS } from '../forms.js';
+import { LOSS } from '../data.js';
 
 let period = 'year'; // 'year' | 'all'
 
@@ -47,6 +48,38 @@ export function notes(root, tab = 'ds', rerender) {
     root.append(h('section.card', h('h2', 'Évolution'), lineChart(series)));
   }
 
+  // ----- Position dans la classe -----
+  if (isDS) {
+    const cmp = done.filter((x) => x.classAvg != null);
+    const ranked = done.filter((x) => x.rank != null).sort((a, b) => a.date.localeCompare(b.date));
+    const top = done.filter((x) => x.best != null);
+    if (cmp.length || ranked.length) {
+      const gap = cmp.length ? mean(cmp.map((x) => x.grade - x.classAvg)) : null;
+      const toTop = top.length ? mean(top.map((x) => x.best - x.grade)) : null;
+      const firsts = ranked.filter((x) => x.rank === 1).length;
+      root.append(h('section.card', h('header.card-head', h('h2', 'Position dans la classe'), h('span.muted', 'Renseigne moyenne, meilleure note et rang à chaque DS rendu')),
+        h('div.tiles.compact',
+          gap != null ? h('div.tile', h('span.tile-value.' + (gap >= 0 ? 'good' : 'bad'), `${gap >= 0 ? '+' : '−'}${fmtNum(Math.abs(gap))}`), h('span.tile-sub', `par rapport à la moyenne (${cmp.length} DS)`)) : null,
+          toTop != null ? h('div.tile', h('span.tile-value', `−${fmtNum(toTop)}`), h('span.tile-sub', 'écart moyen au premier')) : null,
+          ranked.length ? h('div.tile', h('span.tile-value', `${ranked.at(-1).rank}ᵉ${ranked.at(-1).classSize ? ' / ' + ranked.at(-1).classSize : ''}`), h('span.tile-sub', 'dernier rang')) : null,
+          ranked.length ? h('div.tile', h('span.tile-value', String(firsts)), h('span.tile-sub', `fois premier sur ${ranked.length}`)) : null)));
+    } else if (done.length) {
+      root.append(h('p.note', 'Pour viser la tête de classe, il faut se mesurer à elle : à chaque DS rendu, ajoute la moyenne de classe, la meilleure note et ton rang. Le site suivra ton écart au premier.'));
+    }
+
+    // ----- Où partent les points -----
+    const withLoss = done.filter((x) => x.loss);
+    if (withLoss.length) {
+      const tot = Object.fromEntries(LOSS.map(([k]) => [k, withLoss.reduce((a, x) => a + (x.loss[k] || 0), 0) / withLoss.length]));
+      const rows = LOSS.map(([k, label]) => ({ label, value: tot[k], text: `${fmtNum(tot[k])} pt par DS` })).filter((r) => r.value).sort((a, b) => b.value - a.value);
+      const worst = LOSS.find(([, label]) => label === rows[0]?.label);
+      root.append(h('section.card.loss', h('header.card-head', h('h2', 'Où partent tes points'), h('span.muted', `Moyenne sur ${withLoss.length} DS analysé${withLoss.length > 1 ? 's' : ''}`)),
+        hbars(rows), worst ? h('p.note', h('b', worst[1] + ' : '), worst[2]) : null));
+    } else if (done.length) {
+      root.append(h('p.note', 'Le progrès le plus rapide vient de l’analyse des copies. Quand un DS est rendu, ouvre-le ici et répartis les points perdus par cause (cours, méthode, calcul, rédaction, temps, énoncé) : le site te dira où agir.'));
+    }
+  }
+
   // ----- Colleurs -----
   if (!isDS && done.length) {
     const by = new Map();
@@ -65,7 +98,7 @@ export function notes(root, tab = 'ds', rerender) {
   const next = upcoming(list);
   if (next.length) {
     root.append(h('section.card', h('header.card-head', h('h2', 'À venir'), h('span.muted', `${next.length} ${isDS ? 'DS' : 'khôlles'} d’ici le concours`)),
-      next.slice(0, 8).map((x) => line(x, isDS, edit)),
+      next.slice(0, 8).map((x) => line(x, isDS, edit, true)),
       next.length > 8 ? h('a.link', { href: '#/agenda' }, `Voir les ${next.length - 8} suivants dans l’agenda →`) : null));
   }
 
@@ -75,11 +108,12 @@ export function notes(root, tab = 'ds', rerender) {
   if (!list.length) root.append(empty(isDS ? 'Entre ton calendrier de DS : le site te prévient une semaine avant et suit tes notes par matière.' : 'Entre ton colloscope : tu verras tes moyennes par matière et par colleur.'));
 }
 
-function line(x, isDS, edit) {
+function line(x, isDS, edit, plan) {
   const t = today();
   const soon = x.grade == null && diffDays(x.date, t) <= (isDS ? 7 : 2);
   const delta = isDS && x.grade != null && x.targetGrade != null ? x.grade - x.targetGrade : null;
-  return h('button.item-main.rowlike', { onclick: () => edit(x) },
+  const prep = plan && isDS && diffDays(x.date, t) <= 10 && !state.tasks.some((k) => k.title.startsWith(`Préparer ${`${x.topic || 'DS'} ${x.subject}`.trim()} :`));
+  const row = h('button.item-main.rowlike', { onclick: () => edit(x) },
     h('span.date', fmtDate(x.date), x.time ? h('small', ' ' + x.time.replace(':', ' h ')) : null),
     subjTag(x.subject),
     h('span.ellipsis', [isDS ? x.topic : x.examiner, isDS ? x.notes : x.topic || x.feedback].filter(Boolean).join(' — ')),
@@ -89,4 +123,6 @@ function line(x, isDS, edit) {
       : [delta != null ? h('small.' + (delta >= 0 ? 'good' : 'bad'), `${delta >= 0 ? '+' : '−'}${fmtNum(Math.abs(delta))} / objectif`) : null,
         isDS && x.classAvg != null ? h('small.muted', `classe ${fmtNum(x.classAvg)}`) : null,
         h('b.grade.' + gradeClass(x.grade), fmtNum(x.grade, 2))]);
+  if (!prep) return row;
+  return h('div.with-action', row, h('button.btn.small.primary', { onclick: () => planDS(x) }, 'Planifier la préparation'));
 }

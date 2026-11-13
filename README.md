@@ -7,7 +7,8 @@ Tableau de bord pour une année de MP (lycée Michelet, Vanves) : tout ce qu'il 
 - **Aujourd'hui** — compte à rebours jusqu'aux écrits, plan du jour (fiches à revoir, prochaine khôlle, prochain DS, tâches), moyennes, diagnostic tiré des données.
 - **Tâches** — ajout rapide, charge de travail des sept prochains jours, report à demain.
 - **Carnet d'erreurs** — fiches recto/verso avec photos et LaTeX, révision espacée sur sept niveaux, repérage des fiches à réécrire.
-- **Notes** — DS et khôlles : moyennes par matière, tendance, écart à l'objectif, statistiques par colleur.
+- **Notes** — DS et khôlles : moyennes par matière, tendance, écart à l'objectif, statistiques par colleur ; position dans la classe (moyenne, meilleure note, rang), analyse des points perdus par cause, plan de préparation en cinq étapes avant chaque DS.
+- **Interro de cours** — tirage de points du programme à réciter comme en khôlle ; les points ratés ressortent en priorité.
 - **Agenda** — mois, vacances de la zone C, export `.ics` vers le calendrier de l'iPad ou du téléphone.
 - **Programme** — 103 chapitres de MP et de révisions de MPSI, chacun avec ses points de contrôle à cocher, notés de 0 à 4, avec rappel de ceux qui n'ont pas été revus.
 - **Annales** — Mines-Ponts et Centrale-Supélec, maths et physique, sessions 2006 à 2025 : liens vers l'énoncé, le rapport du jury et un corrigé en ligne, suivi des épreuves faites et des notes ; liste de sites de DS et DM corrigés. Les sujets ne sont pas recopiés dans le dépôt.
@@ -34,7 +35,7 @@ En ligne avec GitHub Pages : *Settings → Pages → Deploy from a branch*, raci
 
 ## À ajuster
 
-- Les **coefficients** du simulateur sont un ordre de grandeur : remplace-les par ceux de la notice du concours visé.
+- Les **coefficients** du simulateur (Centrale-Supélec par défaut) viennent de sites tiers : vérifie-les sur la notice officielle du concours.
 - Les **vacances** (zone C, 2026-2027) et la liste des **chapitres** sont dans `js/data.js`.
 - Après une modification des fichiers, incrémente `CACHE` dans `sw.js`.
 

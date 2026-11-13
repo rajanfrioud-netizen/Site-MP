@@ -2,7 +2,7 @@
 import { state } from './store.js';
 import { today, addDays, diffDays, mean, schoolYearStart, weekStart, SUBJECTS, fmtNum } from './util.js';
 import { dueQueue, isLeech, isVague } from './srs.js';
-import { vacanceOf, COEF_PRESETS } from './data.js';
+import { vacanceOf, COEF_PRESETS, LOSS, PROGRAMME } from './data.js';
 
 export const graded = (list, from = schoolYearStart()) => list.filter((x) => x.grade != null && x.date >= from);
 export const upcoming = (list, on = today()) =>
@@ -93,6 +93,23 @@ export function insights() {
     out.push({ level: hit / missed.length >= 0.5 ? 'good' : 'mid', href: '#/notes/ds', title: `Objectif atteint sur ${hit} DS sur ${missed.length}`,
       text: hit / missed.length >= 0.5 ? 'Tes objectifs sont réalistes ; tu peux viser un cran au-dessus.' : 'Fixe un objectif par DS, à un ou deux points au-dessus de ta moyenne.' });
   }
+  const soonDS = upcoming(state.ds).find((x) => diffDays(x.date, t) <= 7);
+  if (soonDS && !state.tasks.some((k) => k.title.startsWith('Préparer ') && k.subject === soonDS.subject && k.dueDate >= t && k.dueDate <= soonDS.date)) {
+    out.unshift({ level: 'mid', href: '#/notes/ds', title: `DS de ${soonDS.subject} dans ${diffDays(soonDS.date, t)} j, sans plan de préparation`,
+      text: 'Ouvre Notes et clique sur « Planifier la préparation » : cinq étapes réparties sur la semaine.' });
+  }
+  const analysed = ds.filter((x) => x.loss);
+  if (analysed.length) {
+    const sums = LOSS.map(([k, label, tip]) => ({ label, tip, v: analysed.reduce((a, x) => a + (x.loss[k] || 0), 0) / analysed.length })).sort((a, b) => b.v - a.v)[0];
+    if (sums.v) out.push({ level: 'bad', href: '#/notes/ds', title: `${sums.label} : ${fmtNum(sums.v)} pt perdus par DS`, text: sums.tip });
+  } else if (ds.length >= 2) {
+    out.push({ level: 'mid', href: '#/notes/ds', title: 'Aucune copie analysée', text: 'Répartis les points perdus de ton dernier DS par cause : c’est ce qui dit quoi travailler.' });
+  }
+  const lastInterro = state.interros.at(-1)?.date;
+  if (!lastInterro || diffDays(t, lastInterro) >= 3) {
+    out.push({ level: 'mid', href: '#/programme/interro', title: lastInterro ? `Pas d’interro de cours depuis ${diffDays(t, lastInterro)} jours` : 'Teste ton cours',
+      text: 'Dix points du programme tirés au hasard, à réciter comme en khôlle : cinq minutes.' });
+  }
   const todo = [...ungraded(state.ds), ...ungraded(state.kholles)];
   if (todo.length) {
     out.push({ level: 'mid', href: ungraded(state.ds).length ? '#/notes/ds' : '#/notes/kholles', title: `${todo.length} note${todo.length > 1 ? 's' : ''} à saisir`,
@@ -108,4 +125,12 @@ export function insights() {
       text: state.lastBackup ? `Dernière exportation il y a ${diffDays(t, state.lastBackup)} jours.` : 'Tes données ne vivent que dans ce navigateur : exporte-les.' });
   }
   return out;
+}
+
+/** Part des points de cours sus, sur les chapitres de MP et de sup. */
+export function coursKnown() {
+  const all = PROGRAMME.flatMap((p) => p.blocks.flatMap((b) => b.chapters));
+  const total = all.reduce((a, c) => a + c.points.length, 0);
+  const ok = all.reduce((a, c) => a + (state.checks[c.id]?.length || 0), 0);
+  return { ok, total };
 }

@@ -1,5 +1,5 @@
 // Mode hors ligne : réseau d'abord, cache en secours.
-const CACHE = 'cockpit-mp-v3';
+const CACHE = 'cockpit-mp-v4';
 const FILES = [
   './',
   'index.html',
@@ -24,6 +24,7 @@ const FILES = [
   'js/views/dashboard.js',
   'js/views/erreurs.js',
   'js/views/focus.js',
+  'js/views/interro.js',
   'js/views/notes.js',
   'js/views/programme.js',
   'js/views/reglages.js',

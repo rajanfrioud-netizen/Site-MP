@@ -187,7 +187,18 @@ export const vacanceOf = (d) => VACANCES.find((v) => d >= v.start && d < v.end);
  * Coefficients d'écrit par matière — ordre de grandeur pour la filière MP,
  * à ajuster d'après la notice officielle du concours visé.
  */
+/** Causes de points perdus dans un devoir, avec le remède correspondant. */
+export const LOSS = [
+  ['cours', 'Cours non su', 'Le cours se récite : fais une interro de cours sur ces chapitres avant le prochain devoir.'],
+  ['methode', 'Méthode inconnue', 'Refais les exercices types du TD sans regarder la correction, et mets chaque méthode en fiche.'],
+  ['calcul', 'Erreurs de calcul', 'Dix minutes de calcul chronométré par jour ; vérifie homogénéité et cas limites à chaque résultat.'],
+  ['redaction', 'Rédaction, justification', 'Lis les rapports de jury : cite les théorèmes avec leurs hypothèses, encadre les résultats.'],
+  ['temps', 'Manque de temps', 'Lis tout le sujet en 10 minutes, commence par ce que tu sais faire, entraîne-toi en temps limité.'],
+  ['enonce', 'Énoncé mal lu', 'Souligne les hypothèses et ce qui est demandé ; relis la question avant de conclure.'],
+];
+
 export const COEF_PRESETS = {
+  'Centrale-Supélec MP (à vérifier)': { 'Mathématiques': 38, 'Physique-Chimie': 24, 'Français-Philosophie': 17, 'Anglais': 11, 'Informatique': 0, 'Sciences Industrielles': 10 },
   'Mines-Ponts (indicatif)': { 'Mathématiques': 9, 'Physique-Chimie': 9, 'Français-Philosophie': 5, 'Anglais': 3, 'Informatique': 2, 'Sciences Industrielles': 0 },
   'Tout à égalité': { 'Mathématiques': 1, 'Physique-Chimie': 1, 'Français-Philosophie': 1, 'Anglais': 1, 'Informatique': 1, 'Sciences Industrielles': 1 },
 };

@@ -2,6 +2,7 @@ import { state, save } from '../store.js';
 import { h, icon, today, fmtRel, diffDays, subj, uid, formModal, SUBJECTS } from '../util.js';
 import { PROGRAMME, LEVELS } from '../data.js';
 import { editMistake } from '../forms.js';
+import { interro } from './interro.js';
 
 const open = new Set(['Mathématiques']);
 
@@ -14,7 +15,8 @@ function stale(id) {
   return c.level < 4 && c.last && diffDays(today(), c.last) > [0, 14, 21, 35][c.level];
 }
 
-export function programme(root, _sub, rerender) {
+export function programme(root, sub, rerender) {
+  if (sub === 'interro') return interro(root, rerender);
   const tree = PROGRAMME.map((p) => ({ ...p, blocks: p.blocks.map((b) => ({ ...b, chapters: b.chapters.map((c) => ({ ...c, subject: p.subject })) })) }));
   for (const c of state.customChapters) {
     let p = tree.find((x) => x.subject === c.subject);
@@ -27,7 +29,7 @@ export function programme(root, _sub, rerender) {
   const total = all.reduce((a, c) => a + lvl(c.id), 0) / (all.length * 4);
 
   root.append(h('header.page-head', h('h1', 'Programme'),
-    h('button.btn.primary', { onclick: addChapter }, icon('plus', 16), 'Chapitre')),
+    h('div.row', h('button.btn', { onclick: addChapter }, icon('plus', 16), 'Chapitre'), h('a.btn.primary', { href: '#/programme/interro' }, icon('mic', 16), 'Interro de cours'))),
   h('p.muted', 'Le concours porte sur les deux années. Note chaque chapitre de 0 à 4 après l’avoir travaillé ; ceux qui n’ont pas été revus depuis longtemps remontent tout seuls.'));
 
   if (state.legacy?.program && !Object.keys(state.chapters).length) {

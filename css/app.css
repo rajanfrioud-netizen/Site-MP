@@ -298,6 +298,12 @@ button.chapter-title[aria-expanded="true"] span::before { content: '▾ '; }
 .point { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; padding: 5px 0; cursor: pointer; }
 .point .check { width: 20px; height: 20px; margin: 1px 0 0; }
 .point:has(:checked) span { color: var(--muted); }
+.loss .hbar { grid-template-columns: 170px 1fr minmax(90px, auto); }
+@media (max-width: 560px) { .loss .hbar { grid-template-columns: 130px 1fr; } }
+.with-action { display: flex; align-items: center; gap: 10px; border-top: 1px solid var(--border); }
+.with-action .rowlike { border-top: 0; }
+.card-head + .with-action { border-top: 0; }
+@media (max-width: 560px) { .with-action { flex-wrap: wrap; padding-bottom: 8px; } }
 /* ---------- Annales ---------- */
 .ann-year { display: grid; grid-template-columns: 56px 1fr; gap: 6px 12px; padding: 10px 0; border-top: 1px solid var(--border); align-items: start; }
 .card-head + .ann-year, h2 + .ann-year { border-top: 0; }
@@ -367,7 +373,8 @@ input[type="range"] { width: 100%; accent-color: var(--text); min-height: 30px; 
 .photos { align-items: stretch; }
 .photo { align-content: start; flex: 1 1 200px; display: grid; gap: 6px; justify-items: start; padding: 10px; border: 1px dashed var(--border); border-radius: 10px; font-size: 13px; color: var(--text2); }
 .photo img { max-width: 100%; max-height: 140px; border-radius: 6px; }
-@media (max-width: 480px) { .field.half { grid-column: 1 / -1; } }
+@media (max-width: 340px) { .field.half { grid-column: 1 / -1; } }
+.field.half > span { min-height: 1.5em; }
 .toast { position: fixed; left: 50%; bottom: calc(90px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 100; background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-weight: 600; font-size: 14px; max-width: calc(100vw - 32px); box-shadow: 0 8px 30px rgb(0 0 0 / .3); transition: opacity .3s; }
 .toast.out { opacity: 0; }
 
