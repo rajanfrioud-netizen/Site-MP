@@ -28,6 +28,8 @@ export const defaults = () => ({
   sessions: [],
   chapters: {}, // id -> { level: 0..4, last: 'AAAA-MM-JJ' }
   customChapters: [], // { id, subject, title }
+  checks: {}, // id de chapitre -> indices des points sus
+  annales: {}, // id d'épreuve -> { done, date, grade, notes }
   activity: {},
   legacy: {},
   lastBackup: '',
@@ -101,6 +103,8 @@ export function normalize(raw) {
   s.activity = { ...(raw.activity || {}) };
   s.chapters = { ...(raw.chapters || {}) };
   s.customChapters = [...(raw.customChapters || [])];
+  s.checks = { ...(raw.checks || {}) };
+  s.annales = { ...(raw.annales || {}) };
 
   // v3 : l'avancement du programme utilisait d'autres identifiants de chapitres (MPSI).
   // On le conserve tel quel pour ne rien perdre, sans prétendre le faire correspondre.

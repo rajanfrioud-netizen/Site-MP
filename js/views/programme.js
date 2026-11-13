@@ -1,6 +1,7 @@
 import { state, save } from '../store.js';
 import { h, icon, today, fmtRel, diffDays, subj, uid, formModal, SUBJECTS } from '../util.js';
 import { PROGRAMME, LEVELS } from '../data.js';
+import { editMistake } from '../forms.js';
 
 const open = new Set(['Mathématiques']);
 
@@ -14,7 +15,7 @@ function stale(id) {
 }
 
 export function programme(root, _sub, rerender) {
-  const tree = PROGRAMME.map((p) => ({ ...p, blocks: [...p.blocks] }));
+  const tree = PROGRAMME.map((p) => ({ ...p, blocks: p.blocks.map((b) => ({ ...b, chapters: b.chapters.map((c) => ({ ...c, subject: p.subject })) })) }));
   for (const c of state.customChapters) {
     let p = tree.find((x) => x.subject === c.subject);
     if (!p) tree.push((p = { subject: c.subject, blocks: [] }));
@@ -42,6 +43,7 @@ export function programme(root, _sub, rerender) {
 
   root.append(h('section.card', h('header.card-head', h('h2', 'Avancement global'), h('span.muted', `${Math.round(total * 100)} %`)),
     h('div.progress', h('i', { style: { width: total * 100 + '%' } })),
+    h('p.muted', `${all.reduce((a, c) => a + (state.checks[c.id]?.length || 0), 0)} points sus sur ${all.reduce((a, c) => a + (c.points?.length || 0), 0)}. Touche un chapitre pour afficher ses points de contrôle.`),
     h('div.legend', LEVELS.map((l, i) => h('span', h('i.lv.lv' + i), `${i} · ${l}`)))));
 
   for (const p of tree) {
@@ -66,21 +68,42 @@ export function programme(root, _sub, rerender) {
   }
 }
 
+const expanded = new Set();
+
 function chapterRow(c, rerender, custom) {
   const cur = lvl(c.id);
   const st = state.chapters[c.id];
   const nb = state.mistakes.filter((m) => m.chapter && m.chapter === c.title).length;
+  const pts = c.points || [];
+  const known = new Set(state.checks[c.id] || []);
+  const isOpen = expanded.has(c.id);
   const set = (l) => {
     state.chapters[c.id] = { level: l === cur ? Math.max(0, l - 1) : l, last: today() };
     save();
   };
-  return h('div.chapter',
-    h('div.chapter-title', h('span', c.title),
-      h('small.muted', [st?.last ? 'travaillé ' + fmtRel(st.last) : null, nb ? `${nb} erreur${nb > 1 ? 's' : ''}` : null].filter(Boolean).join(' · '))),
+  const row = h('div.chapter',
+    h(pts.length ? 'button.chapter-title' : 'div.chapter-title', pts.length ? { 'aria-expanded': String(isOpen), onclick: () => { isOpen ? expanded.delete(c.id) : expanded.add(c.id); rerender(); } } : null,
+      h('span', c.title),
+      h('small.muted', [pts.length ? `${known.size} / ${pts.length} points sus` : null, st?.last ? 'travaillé ' + fmtRel(st.last) : null, nb ? `${nb} erreur${nb > 1 ? 's' : ''}` : null].filter(Boolean).join(' · '))),
     custom ? h('button.icon-btn', { 'aria-label': 'Supprimer le chapitre', onclick: () => { if (confirm('Supprimer ce chapitre ?')) { state.customChapters = state.customChapters.filter((x) => x.id !== c.id); delete state.chapters[c.id]; save(); } } }, icon('trash', 15)) : null,
     h('div.levels', { role: 'group', 'aria-label': 'Niveau de maîtrise' }, [1, 2, 3, 4].map((l) =>
       h('button.lv' + (l <= cur ? '.lv' + cur : ''), { title: LEVELS[l], 'aria-label': LEVELS[l], 'aria-pressed': String(l <= cur), onclick: () => set(l) }, String(l)))),
     cur ? h('button.btn.small', { title: 'Je viens de le retravailler', onclick: () => { state.chapters[c.id] = { level: cur, last: today() }; save(); } }, 'Revu') : null);
+  if (!isOpen || !pts.length) return row;
+  const toggle = (i) => {
+    known.has(i) ? known.delete(i) : known.add(i);
+    state.checks[c.id] = [...known].sort((x, y) => x - y);
+    // Le niveau suit la part de points sus, sans jamais redescendre tout seul.
+    const auto = known.size === pts.length ? 3 : known.size >= pts.length / 2 ? 2 : known.size ? 1 : 0;
+    if (auto > cur) state.chapters[c.id] = { level: auto, last: today() };
+    save();
+  };
+  return h('div.chapter-wrap', row,
+    h('div.points',
+      h('p.muted', 'Coche un point seulement si tu peux l’énoncer et l’utiliser sans tes notes.'),
+      pts.map((pt, i) => h('label.point', h('input.check', { type: 'checkbox', checked: known.has(i), onchange: () => toggle(i) }), h('span', pt))),
+      h('div.row',
+        h('button.btn.small', { onclick: () => editMistake(null, { chapter: c.title, subject: c.subject }) }, '+ Fiche d’erreur sur ce chapitre'))));
 }
 
 function addChapter() {

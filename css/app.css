@@ -289,6 +289,30 @@ h2 + .soon-day { border-top: 0; }
 .chapter { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid var(--border); }
 .chapter-title { flex: 1; min-width: 0; display: grid; }
 .levels { display: flex; gap: 3px; }
+button.chapter-title { background: none; border: 0; padding: 0; text-align: left; }
+button.chapter-title span::before { content: '▸ '; color: var(--muted); }
+button.chapter-title[aria-expanded="true"] span::before { content: '▾ '; }
+.chapter-wrap { border-top: 1px solid var(--border); }
+.chapter-wrap > .chapter { border-top: 0; }
+.points { display: grid; gap: 4px; padding: 4px 0 14px 14px; font-size: 14.5px; }
+.point { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; padding: 5px 0; cursor: pointer; }
+.point .check { width: 20px; height: 20px; margin: 1px 0 0; }
+.point:has(:checked) span { color: var(--muted); }
+/* ---------- Annales ---------- */
+.ann-year { display: grid; grid-template-columns: 56px 1fr; gap: 6px 12px; padding: 10px 0; border-top: 1px solid var(--border); align-items: start; }
+.card-head + .ann-year, h2 + .ann-year { border-top: 0; }
+.ann-year > b { font-size: 17px; font-variant-numeric: tabular-nums; padding-top: 6px; }
+.ann-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px; }
+.ann { display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 4px 10px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); text-align: left; font-weight: 600; font-size: 13.5px; }
+.ann:hover { border-color: var(--muted); }
+.ann.done { background: var(--surface2); }
+.ann small { margin-left: auto; font-weight: 700; font-variant-numeric: tabular-nums; }
+.links { display: grid; gap: 8px; }
+.links a.btn { justify-content: flex-start; white-space: normal; text-align: left; min-height: 44px; padding: 8px 14px; }
+.res { display: grid; gap: 2px; padding: 10px 0; border-top: 1px solid var(--border); text-decoration: none; }
+h2 + .res, .card-head + .res, p + .res { border-top: 0; }
+.res b { text-decoration: underline; text-underline-offset: 3px; }
+.res small { color: var(--text2); }
 .lv { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); font-size: 12.5px; font-weight: 700; color: var(--muted); }
 .lv.lv1 { background: #86b6ef; border-color: #86b6ef; color: #0d366b; } .lv.lv2 { background: #5598e7; border-color: #5598e7; color: #fff; }
 .lv.lv3 { background: #256abf; border-color: #256abf; color: #fff; } .lv.lv4 { background: #104281; border-color: #104281; color: #fff; }

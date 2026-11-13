@@ -9,7 +9,8 @@ Tableau de bord pour une année de MP (lycée Michelet, Vanves) : tout ce qu'il 
 - **Carnet d'erreurs** — fiches recto/verso avec photos et LaTeX, révision espacée sur sept niveaux, repérage des fiches à réécrire.
 - **Notes** — DS et khôlles : moyennes par matière, tendance, écart à l'objectif, statistiques par colleur.
 - **Agenda** — mois, vacances de la zone C, export `.ics` vers le calendrier de l'iPad ou du téléphone.
-- **Programme** — chapitres de MP et révisions de MPSI, notés de 0 à 4, avec rappel de ceux qui n'ont pas été revus.
+- **Programme** — 103 chapitres de MP et de révisions de MPSI, chacun avec ses points de contrôle à cocher, notés de 0 à 4, avec rappel de ceux qui n'ont pas été revus.
+- **Annales** — Mines-Ponts et Centrale-Supélec, maths et physique, sessions 2006 à 2025 : liens vers l'énoncé, le rapport du jury et un corrigé en ligne, suivi des épreuves faites et des notes ; liste de sites de DS et DM corrigés. Les sujets ne sont pas recopiés dans le dépôt.
 - **Chrono** — Pomodoro, blocs de 50 minutes, épreuves de 2, 3 ou 4 heures ; temps par matière et par semaine.
 - **Concours** — frise jusqu'aux écrits, simulateur de moyenne pondérée à coefficients modifiables.
 
@@ -48,6 +49,6 @@ js/srs.js           répétition espacée
 js/stats.js         moyennes, tendances, diagnostic
 js/charts.js        graphiques SVG
 js/data.js          programme, vacances, coefficients
-js/views/           une page par fichier
+js/views/           une page par fichier (annales.js : liste des épreuves et des liens)
 vendor/katex/       rendu LaTeX (embarqué)
 ```

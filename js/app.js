@@ -9,6 +9,7 @@ import { erreurs } from './views/erreurs.js';
 import { notes } from './views/notes.js';
 import { agenda } from './views/agenda.js';
 import { programme } from './views/programme.js';
+import { annales } from './views/annales.js';
 import { focus } from './views/focus.js';
 import { concours } from './views/concours.js';
 import { reglages, applyTheme, importPicker } from './views/reglages.js';
@@ -20,6 +21,7 @@ const ROUTES = [
   { path: 'notes', label: 'Notes', icon: 'chart', view: notes, main: true },
   { path: 'agenda', label: 'Agenda', icon: 'cal', view: agenda },
   { path: 'programme', label: 'Programme', icon: 'book', view: programme },
+  { path: 'annales', label: 'Annales', icon: 'target', view: annales },
   { path: 'focus', label: 'Chrono', icon: 'timer', view: focus },
   { path: 'concours', label: 'Concours', icon: 'flag', view: concours },
   { path: 'reglages', label: 'Réglages', icon: 'cog', view: reglages },
