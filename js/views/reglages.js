@@ -1,5 +1,6 @@
 import { state, save, importData, exportData, reset, counts } from '../store.js';
-import { h, icon, today, fmtDate, toast } from '../util.js';
+import { h, icon, today, fmtDate, fmtRel, toast } from '../util.js';
+import { sendToWidget, copyScript, SCRIPT_URL } from '../widget.js';
 
 export async function downloadBackup() {
   const data = await exportData();
@@ -96,6 +97,25 @@ export function reglages(root, _sub, rerender) {
 
     h('section.card', h('h2', 'Installer sur l’iPad ou le téléphone'),
       h('p.muted', 'Dans Safari : bouton Partager, puis « Sur l’écran d’accueil ». Le site s’ouvre alors comme une application et fonctionne sans connexion.')),
+
+    h('section.card', h('h2', 'Widgets sur l’iPad'),
+      h('p.muted', 'Un site ne peut pas créer de widget lui-même. L’app gratuite Scriptable sert d’intermédiaire : elle affiche le compte à rebours, les fiches à revoir et les prochains DS et khôlles sur l’écran d’accueil et l’écran verrouillé.'),
+      h('ol.steps-list',
+        h('li', 'Installe ', h('a', { href: 'https://apps.apple.com/app/scriptable/id1405459188', target: '_blank', rel: 'noopener' }, 'Scriptable'), ' depuis l’App Store.'),
+        h('li', h('button.btn.small', { onclick: copyScript }, 'Copier le script du widget'), ' puis, dans Scriptable : + en haut à droite, colle, et nomme le script « Cockpit MP ». ', h('a', { href: SCRIPT_URL, target: '_blank' }, 'Voir le code')),
+        h('li', h('button.btn.small.primary', { onclick: sendToWidget }, 'Envoyer mes données au widget'), ' puis « Enregistrer dans Fichiers » → iCloud Drive → dossier Scriptable. Remplace l’ancien fichier.'),
+        h('li', 'Ajoute le widget : appui long sur l’écran d’accueil (ou sur l’écran verrouillé → Personnaliser) → + → Scriptable → choisis la taille → touche le widget → Script : « Cockpit MP ».')),
+      h('p.muted', s.widgetSync ? `Données envoyées ${fmtRel(s.widgetSync)}. Le widget recalcule chaque jour le compte à rebours et les fiches dues ; renvoie les données après avoir ajouté des DS, des khôlles ou des tâches.` : 'Aucune donnée envoyée pour l’instant.')),
+
+    h('section.card', h('h2', 'Activité en direct pour le chrono'),
+      h('p.muted', 'Le minuteur de l’app Horloge, lui, s’affiche en Activité en direct sur l’écran verrouillé. Un Raccourci permet au bouton Démarrer du site de le lancer en même temps.'),
+      h('ol.steps-list',
+        h('li', 'App Raccourcis → + → Ajouter une action → « Démarrer le minuteur ».'),
+        h('li', 'Touche la durée, choisis la variable « Entrée du raccourci » et l’unité « minutes ».'),
+        h('li', 'Nomme le raccourci exactement : ', h('b', s.shortcutName || 'Chrono MP'), '.'),
+        h('li', 'Dans la page Chrono, coche « Lancer aussi le minuteur de l’Horloge ».')),
+      field('Nom du raccourci', 'shortcutName', 'text', 'À changer seulement si tu l’as nommé autrement'),
+      h('p.muted', 'Le site bascule un instant dans Raccourcis : reviens avec le lien en haut à gauche de l’écran. Le minuteur de l’Horloge est indépendant : mettre le chrono du site en pause ne le met pas en pause.')),
 
     h('section.card', h('h2.bad', 'Zone dangereuse'),
       h('button.btn.danger', { onclick: async () => {

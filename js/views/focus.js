@@ -3,6 +3,7 @@ import { h, icon, today, addDays, weekStart, fmtDate, fmtMin, subj, subjTag, SUB
 import { timer, MODES, start, toggle, stop, remainingMs, elapsedMs, clock, onTick, mode } from '../timer.js';
 import { stackedBars, hbars, legend } from '../charts.js';
 import { engage, isActive, AMBIENT, ambientKind } from '../ambient.js';
+import { launchClockTimer } from '../widget.js';
 
 let choice = { mode: 'p50', subject: 'Mathématiques' };
 let off;
@@ -18,7 +19,7 @@ export function focus(root, _sub, rerender) {
       h('div.seg', MODES.map((m) => h('button' + (choice.mode === m.id ? '.on' : ''), { onclick: () => { choice.mode = m.id; rerender(); } }, m.label))),
       h('div.seg.subjects', SUBJECTS.map((s) => h('button' + (choice.subject === s.id ? '.on' : ''), { style: { '--c': s.color }, onclick: () => { choice.subject = s.id; rerender(); } }, h('i.dot'), s.short))),
       h('div.clock', clock((MODES.find((m) => m.id === choice.mode).work || 0) * 6e4)),
-      h('button.btn.primary.large', { onclick: () => { start(choice.mode, choice.subject); engage(); rerender(); } }, icon('play', 18), 'Démarrer'),
+      h('button.btn.primary.large', { onclick: () => { start(choice.mode, choice.subject); engage(); launchClockTimer(); rerender(); } }, icon('play', 18), 'Démarrer'),
       h('p.muted', choice.mode.startsWith('e') ? 'Conditions de concours : sujet imprimé, téléphone dans une autre pièce, aucune pause.' : 'Une seule tâche par bloc. Le temps est enregistré automatiquement à la fin.'));
   } else {
     const face = h('div.clock');
@@ -38,7 +39,7 @@ export function focus(root, _sub, rerender) {
     off = onTick(draw);
     panel.append(h('div', subjTag(timer.subject)), face, h('div.progress.thin', bar), sub,
       h('div.row.center',
-        h('button.btn.large', { onclick: () => { toggle(); if (timer?.running) engage(); rerender(); } }, icon(timer.running ? 'pause' : 'play', 18), timer.running ? 'Pause' : 'Reprendre'),
+        h('button.btn.large', { onclick: () => { toggle(); if (timer?.running) { engage(); launchClockTimer(); } rerender(); } }, icon(timer.running ? 'pause' : 'play', 18), timer.running ? 'Pause' : 'Reprendre'),
         h('button.btn.large.primary', { onclick: () => { const min = stop(); document.title = 'Cockpit MP'; if (!min) rerender(); } }, icon('stop', 18), 'Terminer et enregistrer'),
         h('button.btn.large', { onclick: () => { if (confirm('Abandonner sans enregistrer ?')) { stop({ log: false }); document.title = 'Cockpit MP'; rerender(); } } }, 'Annuler')));
     draw();
@@ -57,6 +58,8 @@ export function focus(root, _sub, rerender) {
       : 'Le chrono s’affiche sur l’écran verrouillé de l’iPad comme un morceau en cours de lecture : matière, heure de fin, barre de progression, boutons Pause et Lecture. Il prend la place de la musique qui joue.' + (ambientKind() === 'brown' ? ' Le bruit brun, un souffle grave et régulier, masque les bruits autour de toi.' : ' La piste est muette.')),
     h('label.point', h('input.check', { type: 'checkbox', checked: !!s.keepAwake, onchange: (e) => { s.keepAwake = e.target.checked; save({ touch: false }); } }),
       h('span', 'Garder l’écran allumé pendant le chrono', h('small.muted', ' — pratique quand l’iPad est posé sur le bureau'))),
+    h('label.point', h('input.check', { type: 'checkbox', checked: !!s.clockShortcut, onchange: (e) => { s.clockShortcut = e.target.checked; save({ touch: false }); } }),
+      h('span', 'Lancer aussi le minuteur de l’Horloge (vraie Activité en direct)', h('small.muted', ' — via le Raccourci « ' + (s.shortcutName || 'Chrono MP') + ' », voir Réglages → iPad'))),
     'Notification' in window && Notification.permission !== 'granted'
       ? h('button.btn.small', { onclick: () => Notification.requestPermission().then(() => rerender()) }, 'Autoriser les notifications de fin')
       : null,

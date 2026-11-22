@@ -110,6 +110,9 @@ export function insights() {
     out.push({ level: 'mid', href: '#/programme/interro', title: lastInterro ? `Pas d’interro de cours depuis ${diffDays(t, lastInterro)} jours` : 'Teste ton cours',
       text: 'Dix points du programme tirés au hasard, à réciter comme en khôlle : cinq minutes.' });
   }
+  if (state.settings.widgetSync && diffDays(t, state.settings.widgetSync) >= 7) {
+    out.push({ level: 'mid', href: '#/reglages', title: 'Widget pas mis à jour depuis une semaine', text: 'Réglages → Widgets → « Envoyer mes données au widget ».' });
+  }
   const todo = [...ungraded(state.ds), ...ungraded(state.kholles)];
   if (todo.length) {
     out.push({ level: 'mid', href: ungraded(state.ds).length ? '#/notes/ds' : '#/notes/kholles', title: `${todo.length} note${todo.length > 1 ? 's' : ''} à saisir`,

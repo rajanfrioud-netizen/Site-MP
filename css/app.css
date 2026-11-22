@@ -258,6 +258,9 @@ img.full { max-width: 100%; border-radius: 8px; background: #fff; }
 @media (max-width: 860px) { .rate { bottom: calc(76px + env(safe-area-inset-bottom)); } }
 .card.center { justify-items: center; padding: 40px 20px; }
 .card > .btn { justify-self: start; }
+.steps-list { margin: 0; padding-left: 22px; display: grid; gap: 10px; color: var(--text2); }
+.steps-list li { padding-left: 4px; }
+.steps-list .btn { margin-right: 4px; }
 
 /* ---------- Agenda ---------- */
 .month { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }

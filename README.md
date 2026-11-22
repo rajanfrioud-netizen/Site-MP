@@ -15,6 +15,13 @@ Tableau de bord pour une année de MP (lycée Michelet, Vanves) : tout ce qu'il 
 - **Chrono** — Pomodoro, blocs de 50 minutes, épreuves de 2, 3 ou 4 heures ; temps par matière et par semaine. Affichage sur l'écran verrouillé de l'iPad via le lecteur audio du système (piste muette ou bruit brun, boutons Pause et Lecture), son de fin programmé, écran maintenu allumé (`js/ambient.js`).
 - **Concours** — frise jusqu'aux écrits, simulateur de moyenne pondérée à coefficients modifiables.
 
+## Sur l'iPad : widgets et Activité en direct
+
+Un site ne peut créer ni widget ni Activité en direct (réservés aux apps natives). Deux contournements, décrits pas à pas dans **Réglages** :
+
+- **Widgets** avec l'app gratuite [Scriptable](https://apps.apple.com/app/scriptable/id1405459188) : le script `widget/Cockpit-MP.js` affiche compte à rebours, fiches à revoir et prochains DS ou khôlles (écran d'accueil et écran verrouillé). Le site lui envoie un fichier `cockpit-widget.json` à ranger dans iCloud Drive → Scriptable.
+- **Activité en direct** : un Raccourci « Chrono MP » (action *Démarrer le minuteur*) est lancé par le bouton Démarrer du chrono ; le minuteur de l'Horloge s'affiche alors sur l'écran verrouillé.
+
 ## Données
 
 Tout reste dans le navigateur (`localStorage` pour les données, `IndexedDB` pour les photos). Rien n'est envoyé sur Internet.

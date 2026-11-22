@@ -2,6 +2,7 @@ import { state, save } from '../store.js';
 import { h, icon, today, fmtDate, fmtNum, subj, gradeClass, mean, formModal, modal } from '../util.js';
 import { start } from '../timer.js';
 import { engage } from '../ambient.js';
+import { launchClockTimer } from '../widget.js';
 import { editMistake } from '../forms.js';
 
 // Vingt sessions. Les épreuves suivent la nomenclature de doc-solus.fr (MP_MATHS_MINES_1_2019…).
@@ -80,7 +81,7 @@ function open(c, e, y) {
     link(c.official(y), 'Site officiel du concours', c.id === 'CENTRALE' ? `sujets et rapports ${y}` : 'sujets et rapports récents'),
     link(`https://duckduckgo.com/?q=${q}`, 'Chercher d’autres corrigés', 'sites de professeurs, UPS, WikiPrépa'),
     h('div.row',
-      h('button.btn.primary', { onclick: () => { start(c.id === 'CENTRALE' ? 'e4' : 'e3', e.subject); engage(); m.close(); location.hash = '#/focus'; } }, icon('timer', 16), c.id === 'CENTRALE' ? 'Lancer 4 h' : 'Lancer 3 h'),
+      h('button.btn.primary', { onclick: () => { start(c.id === 'CENTRALE' ? 'e4' : 'e3', e.subject); engage(); launchClockTimer(); m.close(); location.hash = '#/focus'; } }, icon('timer', 16), c.id === 'CENTRALE' ? 'Lancer 4 h' : 'Lancer 3 h'),
       h('button.btn', { onclick: () => { m.close(); result(k, name); } }, icon('check', 16), a.done ? 'Modifier mon résultat' : 'J’ai fait cette épreuve'),
       h('button.btn', { onclick: () => { m.close(); editMistake(null, { subject: e.subject, title: `${name} — ` }); } }, '+ Fiche d’erreur')),
     h('p.muted', c.id === 'MINES' ? 'Vérifie la durée sur l’en-tête du sujet (3 h ou 4 h selon l’épreuve) et choisis le chrono correspondant.' : 'Épreuve de 4 heures.'),
