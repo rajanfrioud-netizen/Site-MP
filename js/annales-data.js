@@ -3,7 +3,7 @@
 // Les chapitres associés (identifiants de js/data.js) sont déduits du thème : ce sont les
 // chapitres qui servent le plus probablement, pas un relevé question par question.
 // Chacun peut les corriger depuis l'onglet Annales (bouton « Modifier les chapitres »).
-// Les 160 épreuves (2006-2025) y figurent. Avant les concours 2015, le programme était différent :
+// Maths et physique : les 160 épreuves (2006-2025) y figurent ; chimie des Mines : les 20 ; SI : en partie. Avant les concours 2015, le programme était différent :
 // certaines parties de ces sujets sont hors programme.
 
 export const THEMES = {
@@ -92,8 +92,8 @@ export const THEMES = {
   // ---------- Centrale-Supélec, Physique-chimie 2 ----------
   MP_PHYSIQUE_CENTRALE_2_2025: { t: 'Faire l’image d’une exoplanète', c: ['mp-opt-03', 'mp-opt-01', 'mp-opt-02'] },
   MP_PHYSIQUE_CENTRALE_2_2024: { t: 'Structure de la matière', c: ['mp-qua-01', 'sup-ph-08', 'mp-the-04'] },
-  MP_PHYSIQUE_CENTRALE_2_2023: { t: 'Errare humanum est : deux découvertes qui n’en furent pas (ondes dans un plasma, oxydoréduction)', c: ['mp-em-06', 'mp-em-07', 'sup-ph-08', 'mp-chi-03'] },
-  MP_PHYSIQUE_CENTRALE_2_2021: { t: 'Purification de l’eau du circuit primaire d’une centrale nucléaire', c: ['mp-chi-02', 'mp-chi-03', 'sup-ph-08'] },
+  MP_PHYSIQUE_CENTRALE_2_2023: { t: 'Errare humanum est : deux découvertes qui n’en furent pas (ondes dans un plasma, oxydoréduction)', c: ['mp-em-06', 'mp-em-07', 'sup-ph-10', 'mp-chi-03'] },
+  MP_PHYSIQUE_CENTRALE_2_2021: { t: 'Purification de l’eau du circuit primaire d’une centrale nucléaire', c: ['mp-chi-02', 'mp-chi-03', 'sup-ph-10'] },
   MP_PHYSIQUE_CENTRALE_2_2019: { t: 'Capture d’empreintes digitales, stockage de déchets radioactifs', c: ['mp-opt-01', 'mp-the-02', 'mp-chi-02'] },
   MP_PHYSIQUE_CENTRALE_2_2017: { t: 'Expérimenter avec un morceau de scotch', c: ['mp-mec-03'] },
   // ---------- Compléments (recherche de novembre 2026, même source) ----------
@@ -180,17 +180,60 @@ export const THEMES = {
   MP_PHYSIQUE_CENTRALE_2_2020: { t: 'Proxima du Centaure', c: ['mp-the-03', 'mp-opt-03', 'sup-ph-02', 'mp-em-04'] },
   MP_PHYSIQUE_CENTRALE_2_2018: { t: 'Géophysique de la planète Terre', c: ['sup-ph-02', 'mp-em-01'] },
   MP_PHYSIQUE_CENTRALE_2_2016: { t: 'Étude d’une installation nucléaire REP', c: ['mp-the-01', 'mp-the-02', 'sup-ph-02'] },
-  MP_PHYSIQUE_CENTRALE_2_2015: { t: 'Contrôle non destructif et alliage', c: ['mp-em-06', 'sup-ph-08', 'sup-ph-01'] },
+  MP_PHYSIQUE_CENTRALE_2_2015: { t: 'Contrôle non destructif et alliage', c: ['mp-em-06', 'sup-ph-08', 'sup-ph-10', 'sup-ph-01'] },
   MP_PHYSIQUE_CENTRALE_2_2014: { t: 'Les LIDAR atmosphériques', c: ['mp-opt-01', 'mp-em-08', 'sup-ph-04'] },
   MP_PHYSIQUE_CENTRALE_2_2013: { t: 'Refroidissement de la matière ; le mélange eau-glycol', c: ['mp-the-04', 'mp-chi-02', 'mp-the-02'] },
-  MP_PHYSIQUE_CENTRALE_2_2012: { t: 'Du minerai aux applications : le cuivre', c: ['mp-chi-02', 'sup-ph-08', 'mp-opt-02'] },
+  MP_PHYSIQUE_CENTRALE_2_2012: { t: 'Du minerai aux applications : le cuivre', c: ['mp-chi-02', 'sup-ph-08', 'sup-ph-10', 'mp-opt-02'] },
   MP_PHYSIQUE_CENTRALE_2_2011: { t: 'Autour de l’argent', c: ['mp-chi-02', 'sup-ph-08', 'mp-opt-02'] },
-  MP_PHYSIQUE_CENTRALE_2_2010: { t: 'L’anomalie Pioneer et les anomalies de l’eau', c: ['sup-ph-02', 'mp-the-03', 'sup-ph-08'] },
+  MP_PHYSIQUE_CENTRALE_2_2010: { t: 'L’anomalie Pioneer et les anomalies de l’eau', c: ['sup-ph-02', 'mp-the-03', 'sup-ph-10'] },
   MP_PHYSIQUE_CENTRALE_2_2009: { t: 'Le seigneur des anneaux (Saturne, Titan)', c: ['sup-ph-02', 'mp-the-03'] },
   MP_PHYSIQUE_CENTRALE_2_2008: { t: 'Autour de l’eau ; l’humidité dans l’air', c: ['mp-chi-02', 'sup-ph-05', 'mp-chi-01'] },
   MP_PHYSIQUE_CENTRALE_2_2007: { t: 'Analyseur de monoxyde de carbone ; le carbone et ses oxydes', c: ['mp-chi-02', 'sup-ph-08'] },
-  MP_PHYSIQUE_CENTRALE_2_2006: { t: 'Alternateurs de bicyclette, thermorégulation d’un cycliste ; le chlore', c: ['sup-ph-06', 'mp-the-02', 'sup-ph-08'] },
+  MP_PHYSIQUE_CENTRALE_2_2006: { t: 'Alternateurs de bicyclette, thermorégulation d’un cycliste ; le chlore', c: ['sup-ph-06', 'mp-the-02', 'sup-ph-10'] },
 
+  // ---------- Mines-Ponts, Chimie (1 h 30), d'après doc-solus.fr ----------
+  // Chapitres déduits du thème ; les sujets « autour d'un élément » mobilisent presque toujours
+  // architecture de la matière, solutions aqueuses et thermochimie.
+  MP_CHIMIE_MINES_1_2025: { t: 'Chimie et céramiques (nitrure de bore, borazine, carbure de zirconium)', c: ['sup-ph-08', 'mp-chi-02', 'mp-chi-01'] },
+  MP_CHIMIE_MINES_1_2024: { t: 'Industrie de l’extraction de l’uranium', c: ['sup-ph-10', 'mp-chi-02', 'sup-ph-08'] },
+  MP_CHIMIE_MINES_1_2023: { t: 'Étude du complexe de chrome CrO₅', c: ['sup-ph-08', 'sup-ph-10', 'sup-ph-09'] },
+  MP_CHIMIE_MINES_1_2022: { t: 'Chimie et énergie (hydrogène, pile zinc-air)', c: ['mp-chi-04', 'mp-chi-03', 'mp-chi-02'] },
+  MP_CHIMIE_MINES_1_2021: { t: 'Autour du strontium', c: ['sup-ph-08', 'sup-ph-10', 'mp-chi-02'] },
+  MP_CHIMIE_MINES_1_2020: { t: 'Le gadolinium', c: ['sup-ph-08', 'sup-ph-10', 'mp-chi-02'] },
+  MP_CHIMIE_MINES_1_2019: { t: 'Les batteries lithium-soufre', c: ['mp-chi-04', 'mp-chi-03', 'sup-ph-08'] },
+  MP_CHIMIE_MINES_1_2018: { t: 'Le bioéthanol', c: ['mp-chi-01', 'mp-chi-02', 'sup-ph-09'] },
+  MP_CHIMIE_MINES_1_2017: { t: 'Autour du silicium (silice, batterie air-silicium)', c: ['sup-ph-08', 'mp-chi-04', 'mp-chi-02'] },
+  MP_CHIMIE_MINES_1_2016: { t: 'Le béton', c: ['sup-ph-10', 'sup-ph-08', 'mp-chi-02'] },
+  MP_CHIMIE_MINES_1_2015: { t: 'Métallurgie du lithium', c: ['sup-ph-08', 'sup-ph-10', 'mp-chi-02'] },
+  MP_CHIMIE_MINES_1_2014: { t: 'Autour du vanadium', c: ['sup-ph-08', 'sup-ph-10', 'mp-chi-02'] },
+  MP_CHIMIE_MINES_1_2013: { t: 'Le plomb', c: ['sup-ph-10', 'mp-chi-04', 'mp-chi-02'] },
+  MP_CHIMIE_MINES_1_2012: { t: 'Le dibrome', c: ['sup-ph-10', 'sup-ph-08', 'mp-chi-02'] },
+  MP_CHIMIE_MINES_1_2011: { t: 'Le calcium et le magnésium', c: ['sup-ph-08', 'sup-ph-10', 'mp-chi-02'] },
+  MP_CHIMIE_MINES_1_2010: { t: 'Le mercure', c: ['sup-ph-08', 'sup-ph-10', 'mp-chi-02'] },
+  MP_CHIMIE_MINES_1_2009: { t: 'L’or (recyclage, électrolyse)', c: ['mp-chi-04', 'sup-ph-10', 'sup-ph-08'] },
+  MP_CHIMIE_MINES_1_2008: { t: 'Étude des éléments de la colonne 13', c: ['sup-ph-08', 'mp-chi-02'] },
+  MP_CHIMIE_MINES_1_2007: { t: 'Chimie du phosphore', c: ['sup-ph-08', 'mp-chi-02', 'sup-ph-09', 'sup-ph-10'] },
+  MP_CHIMIE_MINES_1_2006: { t: 'Le carbone', c: ['sup-ph-08', 'mp-chi-02', 'sup-ph-10'] },
+
+  // ---------- Sciences industrielles (Mines-Ponts SI, Centrale-Supélec S2I) ----------
+  // Sources : éduscol STI, UPSTI, sujets publiés. Couverture partielle : les années absentes
+  // n'ont pas pu être identifiées. Un sujet de SI parcourt presque toujours tout le programme.
+  MP_SI_MINES_1_2025: { t: 'Goniomètre à actionneurs piézoélectriques', c: ['mp-si-01', 'mp-si-06', 'mp-si-05'] },
+  MP_SI_MINES_1_2024: { t: 'Inverseur de poussée eTras', c: ['mp-si-03', 'mp-si-04'] },
+  MP_SI_MINES_1_2021: { t: 'Bassin de traction du LHEEA', c: [] },
+  MP_SI_MINES_1_2013: { t: 'Prothèse active transtibiale (à confirmer)', c: [] },
+  MP_SI_CENTRALE_1_2025: { t: 'Construction laser additive directe', c: [] },
+  MP_SI_CENTRALE_1_2024: { t: 'Arthromoteur : attelle de mobilisation passive du genou', c: ['mp-si-05', 'mp-si-07', 'mp-si-01'] },
+  MP_SI_CENTRALE_1_2023: { t: 'Exosquelette lombaire', c: [] },
+  MP_SI_CENTRALE_1_2022: { t: 'SLED : appui-tête et « coup du lapin »', c: [] },
+  MP_SI_CENTRALE_1_2021: { t: 'Système de stationnement automatique de véhicules', c: [] },
+  MP_SI_CENTRALE_1_2020: { t: 'Voile solaire de la Seine Musicale', c: [] },
+  MP_SI_CENTRALE_1_2019: { t: 'Ensouillage de câbles sous-marins (à confirmer)', c: ['mp-si-06', 'mp-si-05'] },
+  MP_SI_CENTRALE_1_2018: { t: 'Robot Sphero', c: [] },
+  MP_SI_CENTRALE_1_2017: { t: 'Mesures topographiques par station totale', c: [] },
+  MP_SI_CENTRALE_1_2016: { t: 'Bras manipulateur collaboratif ZE Solution', c: [] },
+  MP_SI_CENTRALE_1_2011: { t: 'ALISTAR, engin sous-marin autonome d’inspection', c: [] },
+  MP_SI_CENTRALE_1_2008: { t: 'Ouverture de porte de TGV', c: [] },
 };
 
 /** Mot-clé pour chercher d'autres sujets sur un chapitre (recherche de doc-solus.fr). */
@@ -212,4 +255,5 @@ export const KEYWORDS = {
   'mp-the-05': 'capacité thermique',
   'mp-qua-01': 'physique quantique', 'mp-qua-02': 'paquet d’ondes', 'mp-qua-03': 'puits de potentiel', 'mp-qua-04': 'effet tunnel',
   'mp-chi-01': 'thermochimie', 'mp-chi-02': 'thermochimie', 'mp-chi-03': 'courbes intensité-potentiel', 'mp-chi-04': 'corrosion',
+  'sup-ph-08': 'cristallographie', 'sup-ph-09': 'cinétique chimique', 'sup-ph-10': 'diagramme potentiel-pH',
 };

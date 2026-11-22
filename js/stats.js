@@ -103,7 +103,7 @@ export function insights() {
     out.push({ level: 'mid', href: '#/annales/ds', title: `DS de ${dsCh.subject} ${diffDays(dsCh.date, t) <= 1 ? 'demain' : `dans ${diffDays(dsCh.date, t)} j`} : entraîne-toi sur ses chapitres`,
       text: 'Les annales Mines et Centrale qui portent sur les mêmes chapitres sont prêtes dans l’onglet Annales.' });
   } else {
-    const noCh = upcoming(state.ds).find((x) => diffDays(x.date, t) <= 10 && (x.subject === 'Mathématiques' || x.subject === 'Physique-Chimie'));
+    const noCh = upcoming(state.ds).find((x) => diffDays(x.date, t) <= 10 && ['Mathématiques', 'Physique-Chimie', 'Sciences Industrielles'].includes(x.subject));
     if (noCh) out.push({ level: 'mid', href: '#/annales', title: `Quels chapitres au DS de ${noCh.subject} ?`, text: 'Indique-les dans le DS : le site te proposera les annales correspondantes.' });
   }
   const analysed = ds.filter((x) => x.loss);

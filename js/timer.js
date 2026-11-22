@@ -10,6 +10,7 @@ export const MODES = [
   { id: 'e2', label: 'Épreuve 2 h', work: 120 },
   { id: 'e3', label: 'Épreuve 3 h', work: 180 },
   { id: 'e4', label: 'Épreuve 4 h', work: 240 },
+  { id: 'e15', label: 'Épreuve 1 h 30', work: 90 },
 ];
 
 // { mode, subject, phase:'work'|'rest', startedAt, elapsed (ms accumulés), running }
