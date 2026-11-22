@@ -3,7 +3,8 @@
 // Les chapitres associés (identifiants de js/data.js) sont déduits du thème : ce sont les
 // chapitres qui servent le plus probablement, pas un relevé question par question.
 // Chacun peut les corriger depuis l'onglet Annales (bouton « Modifier les chapitres »).
-// Une épreuve absente de cette table a un thème inconnu ici.
+// Les 160 épreuves (2006-2025) y figurent. Avant les concours 2015, le programme était différent :
+// certaines parties de ces sujets sont hors programme.
 
 export const THEMES = {
   // ---------- Mines-Ponts, Mathématiques 1 ----------
@@ -91,10 +92,105 @@ export const THEMES = {
   // ---------- Centrale-Supélec, Physique-chimie 2 ----------
   MP_PHYSIQUE_CENTRALE_2_2025: { t: 'Faire l’image d’une exoplanète', c: ['mp-opt-03', 'mp-opt-01', 'mp-opt-02'] },
   MP_PHYSIQUE_CENTRALE_2_2024: { t: 'Structure de la matière', c: ['mp-qua-01', 'sup-ph-08', 'mp-the-04'] },
-  MP_PHYSIQUE_CENTRALE_2_2023: { t: 'Errare humanum est : deux découvertes qui n’en furent pas', c: [] },
+  MP_PHYSIQUE_CENTRALE_2_2023: { t: 'Errare humanum est : deux découvertes qui n’en furent pas (ondes dans un plasma, oxydoréduction)', c: ['mp-em-06', 'mp-em-07', 'sup-ph-08', 'mp-chi-03'] },
   MP_PHYSIQUE_CENTRALE_2_2021: { t: 'Purification de l’eau du circuit primaire d’une centrale nucléaire', c: ['mp-chi-02', 'mp-chi-03', 'sup-ph-08'] },
   MP_PHYSIQUE_CENTRALE_2_2019: { t: 'Capture d’empreintes digitales, stockage de déchets radioactifs', c: ['mp-opt-01', 'mp-the-02', 'mp-chi-02'] },
   MP_PHYSIQUE_CENTRALE_2_2017: { t: 'Expérimenter avec un morceau de scotch', c: ['mp-mec-03'] },
+  // ---------- Compléments (recherche de novembre 2026, même source) ----------
+  MP_MATHS_MINES_1_2018: { t: 'Lemme de Fekete et théorème d’Erdős-Szekeres', c: ['mp-pro-03', 'mp-pro-02', 'sup-ma-02', 'sup-ma-08'] },
+  MP_MATHS_MINES_1_2017: { t: 'Étude d’un endomorphisme d’un espace de fonctions numériques', c: ['mp-ana-01', 'mp-ana-02', 'mp-alg-04', 'sup-ma-04'] },
+  MP_MATHS_MINES_1_2014: { t: 'Représentation matricielle A·e^A', c: ['mp-alg-07', 'mp-alg-05', 'mp-ana-13'] },
+  MP_MATHS_MINES_1_2013: { t: 'Applications bilinéaires symétriques plates', c: ['mp-alg-08', 'mp-alg-10', 'mp-alg-05'] },
+  MP_MATHS_MINES_1_2012: { t: 'Réduction de certaines matrices de coefficients binomiaux', c: ['mp-alg-10', 'sup-ma-05', 'sup-ma-08'] },
+  MP_MATHS_MINES_1_2010: { t: 'Prolongement d’une fonction harmonique', c: ['mp-ana-08', 'mp-ana-07', 'mp-ana-14'] },
+  MP_MATHS_MINES_1_2008: { t: 'Inégalité d’Alexandrov', c: ['mp-alg-10', 'mp-ana-04', 'mp-alg-08'] },
+  MP_MATHS_MINES_1_2007: { t: 'Séries et caractères', c: ['mp-alg-02', 'mp-ana-08', 'mp-alg-01'] },
+  MP_MATHS_MINES_1_2006: { t: 'Théorème de Perron-Frobenius', c: ['mp-alg-05', 'mp-alg-04', 'mp-ana-04'] },
+
+  MP_MATHS_MINES_2_2024: { t: 'Phénomènes de seuil dans les graphes aléatoires', c: ['mp-pro-03', 'mp-pro-02', 'sup-ma-08'] },
+  MP_MATHS_MINES_2_2023: { t: 'Fonction de Wallis', c: ['mp-ana-12', 'mp-ana-08', 'sup-ma-03', 'mp-ana-10'] },
+  MP_MATHS_MINES_2_2020: { t: 'Nombre de sites visités par une marche aléatoire', c: ['mp-pro-04', 'mp-ana-08', 'mp-pro-03', 'sup-ma-08'] },
+  MP_MATHS_MINES_2_2018: { t: 'Racine carrée d’une matrice (méthode de Newton)', c: ['mp-alg-10', 'mp-alg-05', 'mp-ana-03'] },
+  MP_MATHS_MINES_2_2014: { t: 'Points fixes et opérateurs à noyau', c: ['mp-ana-01', 'mp-ana-02', 'mp-ana-12'] },
+  MP_MATHS_MINES_2_2013: { t: 'Quelques propriétés géométriques du groupe orthogonal', c: ['mp-alg-09', 'mp-ana-04', 'mp-alg-01'] },
+  MP_MATHS_MINES_2_2012: { t: 'Formule sommatoire de Poisson', c: ['mp-ana-07', 'mp-ana-10', 'mp-ana-05'] },
+  MP_MATHS_MINES_2_2011: { t: 'Sur le calcul des variations', c: ['mp-ana-15', 'mp-ana-14', 'sup-ma-04'] },
+  MP_MATHS_MINES_2_2010: { t: 'Dénombrement de certaines matrices binaires', c: ['sup-ma-08', 'sup-ma-07', 'mp-ana-10'] },
+  MP_MATHS_MINES_2_2009: { t: 'Théorème de Müntz', c: ['sup-ma-07', 'mp-alg-08', 'mp-ana-02'] },
+  MP_MATHS_MINES_2_2008: { t: 'Support de la transformée de Radon', c: ['mp-ana-12', 'mp-ana-10'] },
+  MP_MATHS_MINES_2_2007: { t: 'Algèbres de Lie', c: ['mp-alg-05', 'mp-alg-03'] },
+  MP_MATHS_MINES_2_2006: { t: 'Comportement asymptotique des racines d’un polynôme', c: ['sup-ma-05', 'sup-ma-02', 'sup-ma-04'] },
+
+  MP_MATHS_CENTRALE_1_2014: { t: 'Exemples d’études de fonctions matricielles et applications', c: ['mp-ana-03', 'mp-alg-05', 'mp-ana-14'] },
+  MP_MATHS_CENTRALE_1_2013: { t: 'Théorème de Jörgens', c: ['mp-ana-14'] },
+  MP_MATHS_CENTRALE_1_2012: { t: 'Produit de convolution, transformée de Fourier et codimension finie', c: ['mp-ana-12', 'mp-ana-10', 'mp-alg-03'] },
+  MP_MATHS_CENTRALE_1_2011: { t: 'Développement asymptotique du reste des séries de Riemann', c: ['mp-ana-05', 'sup-ma-03', 'sup-ma-04'] },
+  MP_MATHS_CENTRALE_1_2010: { t: 'Fonction continue surjective de [0 ; 1] sur un triangle plein', c: ['mp-ana-03', 'mp-ana-07', 'mp-ana-04'] },
+  MP_MATHS_CENTRALE_1_2009: { t: 'Fonctions eulériennes et opérateur d’Abel', c: ['mp-ana-12', 'mp-ana-10'] },
+  MP_MATHS_CENTRALE_1_2008: { t: 'Équations différentielles de Sturm-Liouville sur ℝ', c: ['mp-ana-13', 'mp-alg-08', 'mp-ana-07'] },
+  MP_MATHS_CENTRALE_1_2007: { t: 'Fonctions périodiques', c: ['mp-ana-07', 'mp-ana-13'] },
+  MP_MATHS_CENTRALE_1_2006: { t: 'Problèmes asymptotiques relatifs à la longueur d’une ellipse', c: ['mp-ana-08', 'mp-ana-12', 'sup-ma-02'] },
+
+  MP_MATHS_CENTRALE_2_2024: { t: 'Étude d’une équation fonctionnelle', c: ['sup-ma-03', 'mp-ana-07'] },
+  MP_MATHS_CENTRALE_2_2017: { t: 'Variables aléatoires entières décomposables et infiniment divisibles', c: ['mp-pro-04', 'mp-pro-02', 'mp-ana-08'] },
+  MP_MATHS_CENTRALE_2_2016: { t: 'Sommes pondérées de résultats de « pile ou face » indépendants', c: ['mp-pro-02', 'mp-pro-03', 'mp-ana-05'] },
+  MP_MATHS_CENTRALE_2_2011: { t: 'Matrices de Hilbert et produit scalaire associé', c: ['mp-alg-08', 'mp-alg-10', 'sup-ma-05'] },
+  MP_MATHS_CENTRALE_2_2010: { t: 'Deux théorèmes sur les espaces quadratiques', c: ['mp-alg-09', 'mp-alg-08'] },
+  MP_MATHS_CENTRALE_2_2009: { t: 'Minimum d’une fonctionnelle quadratique sur un sous-espace de ℝⁿ', c: ['mp-ana-15', 'mp-alg-10', 'mp-alg-08'] },
+  MP_MATHS_CENTRALE_2_2008: { t: 'Factorisation LU', c: ['sup-ma-07', 'mp-alg-03'] },
+  MP_MATHS_CENTRALE_2_2007: { t: 'Sous-espaces de ℒ(E) et automorphismes orthogonaux', c: ['mp-alg-09', 'mp-alg-03'] },
+  MP_MATHS_CENTRALE_2_2006: { t: 'Étude d’une famille de polynômes, applications', c: ['sup-ma-05', 'mp-ana-08'] },
+
+  MP_PHYSIQUE_MINES_1_2021: { t: 'Jean Perrin et l’hypothèse atomique', c: ['mp-the-04', 'sup-ph-02', 'sup-ph-04'] },
+  MP_PHYSIQUE_MINES_1_2020: { t: 'Au temps des Mayas (éclipse de Lune, écho de la pyramide)', c: ['mp-the-04', 'mp-opt-02', 'mp-sig-02', 'sup-ph-07'] },
+  MP_PHYSIQUE_MINES_1_2014: { t: 'De la physique autour d’un tore', c: ['sup-ph-03', 'mp-em-02', 'sup-ph-06', 'mp-the-02'] },
+  MP_PHYSIQUE_MINES_1_2013: { t: 'Autour d’un dragster à réaction', c: ['sup-ph-02', 'mp-em-01', 'sup-ph-01'] },
+  MP_PHYSIQUE_MINES_1_2012: { t: 'Propagation de la lumière', c: ['mp-em-05', 'mp-opt-01', 'mp-em-06'] },
+  MP_PHYSIQUE_MINES_1_2011: { t: 'Transport planétaire (train dans un tunnel, ascenseur spatial)', c: ['sup-ph-02', 'mp-mec-02', 'mp-mec-01'] },
+  MP_PHYSIQUE_MINES_1_2010: { t: 'Éléments d’astrophysique', c: ['sup-ph-02', 'mp-em-01'] },
+  MP_PHYSIQUE_MINES_1_2009: { t: 'À propos de Heinrich Olbers (loi de Planck)', c: ['mp-the-03', 'mp-the-04'] },
+  MP_PHYSIQUE_MINES_1_2008: { t: 'Quelques oscillations (bille roulant sur une piste circulaire)', c: ['sup-ph-03', 'sup-ph-02', 'mp-mec-03'] },
+  MP_PHYSIQUE_MINES_1_2007: { t: 'Satellites de communication', c: ['sup-ph-02', 'mp-mec-01'] },
+  MP_PHYSIQUE_MINES_1_2006: { t: 'Ondes électromagnétiques : fibre optique, antennes', c: ['mp-em-08', 'mp-em-05', 'sup-ph-04'] },
+
+  MP_PHYSIQUE_MINES_2_2022: { t: 'À propos des araignées', c: ['mp-em-01', 'sup-ph-02', 'sup-ph-07'] },
+  MP_PHYSIQUE_MINES_2_2018: { t: 'Et pour un neutron de plus… (deutérium)', c: ['mp-qua-03', 'mp-the-04', 'mp-qua-01'] },
+  MP_PHYSIQUE_MINES_2_2016: { t: 'Détection des exoplanètes', c: ['sup-ph-02', 'sup-ph-01', 'mp-the-03'] },
+  MP_PHYSIQUE_MINES_2_2014: { t: 'Lasers et distances', c: ['sup-ph-04', 'sup-ph-02', 'mp-the-02'] },
+  MP_PHYSIQUE_MINES_2_2013: { t: 'À propos des diodes', c: ['mp-em-01', 'sup-ph-01', 'mp-the-04'] },
+  MP_PHYSIQUE_MINES_2_2012: { t: 'Physique dans l’atmosphère (brouillard, lidar)', c: ['mp-the-04', 'sup-ph-05', 'mp-em-08'] },
+  MP_PHYSIQUE_MINES_2_2011: { t: 'À propos de conduction électrique (semi-conducteur, plasma)', c: ['mp-em-06', 'mp-em-03', 'mp-em-02'] },
+  MP_PHYSIQUE_MINES_2_2010: { t: 'Record de vitesse sur rail', c: ['sup-ph-02', 'sup-ph-01', 'sup-ph-06'] },
+  MP_PHYSIQUE_MINES_2_2009: { t: 'Oscillations de puissance à haute fréquence (magnétron, klystron)', c: ['mp-em-01', 'mp-em-02', 'sup-ph-02'] },
+  MP_PHYSIQUE_MINES_2_2008: { t: 'Ascension atmosphérique en montgolfière', c: ['sup-ph-05', 'mp-the-04', 'sup-ph-02'] },
+  MP_PHYSIQUE_MINES_2_2007: { t: 'Gratte-ciel et tours (amortisseurs)', c: ['sup-ph-02', 'sup-ph-01', 'mp-sig-01'] },
+  MP_PHYSIQUE_MINES_2_2006: { t: 'Découverte de Neptune', c: ['sup-ph-02'] },
+
+  MP_PHYSIQUE_CENTRALE_1_2014: { t: 'Les télescopes infrarouges', c: ['sup-ph-04', 'mp-opt-01', 'mp-the-03'] },
+  MP_PHYSIQUE_CENTRALE_1_2013: { t: 'Étincelles électriques et exploration optique du plasma', c: ['mp-em-01', 'mp-em-06', 'mp-opt-04'] },
+  MP_PHYSIQUE_CENTRALE_1_2012: { t: 'Étude du satellite Jason 2', c: ['sup-ph-02', 'mp-em-06', 'mp-em-05'] },
+  MP_PHYSIQUE_CENTRALE_1_2011: { t: 'Lasers de puissance', c: ['mp-em-05', 'mp-em-04'] },
+  MP_PHYSIQUE_CENTRALE_1_2010: { t: 'Projet MOSE (barrière de la lagune de Venise)', c: ['sup-ph-03', 'sup-ph-02'] },
+  MP_PHYSIQUE_CENTRALE_1_2009: { t: 'Éléments de cosmologie', c: ['sup-ph-02', 'mp-the-03'] },
+  MP_PHYSIQUE_CENTRALE_1_2008: { t: 'Gravitation, gravimétrie et géodésie spatiale', c: ['sup-ph-02', 'mp-em-01', 'mp-mec-01'] },
+  MP_PHYSIQUE_CENTRALE_1_2007: { t: 'Freinage électromagnétique d’une plaque métallique', c: ['sup-ph-06', 'mp-em-03', 'mp-em-02'] },
+  MP_PHYSIQUE_CENTRALE_1_2006: { t: 'Orbite et maintien à poste d’un satellite héliosynchrone', c: ['sup-ph-02', 'mp-mec-01'] },
+
+  MP_PHYSIQUE_CENTRALE_2_2022: { t: 'Les bouées houlographes Waverider', c: ['mp-chi-04', 'sup-ph-02', 'sup-ph-06'] },
+  MP_PHYSIQUE_CENTRALE_2_2020: { t: 'Proxima du Centaure', c: ['mp-the-03', 'mp-opt-03', 'sup-ph-02', 'mp-em-04'] },
+  MP_PHYSIQUE_CENTRALE_2_2018: { t: 'Géophysique de la planète Terre', c: ['sup-ph-02', 'mp-em-01'] },
+  MP_PHYSIQUE_CENTRALE_2_2016: { t: 'Étude d’une installation nucléaire REP', c: ['mp-the-01', 'mp-the-02', 'sup-ph-02'] },
+  MP_PHYSIQUE_CENTRALE_2_2015: { t: 'Contrôle non destructif et alliage', c: ['mp-em-06', 'sup-ph-08', 'sup-ph-01'] },
+  MP_PHYSIQUE_CENTRALE_2_2014: { t: 'Les LIDAR atmosphériques', c: ['mp-opt-01', 'mp-em-08', 'sup-ph-04'] },
+  MP_PHYSIQUE_CENTRALE_2_2013: { t: 'Refroidissement de la matière ; le mélange eau-glycol', c: ['mp-the-04', 'mp-chi-02', 'mp-the-02'] },
+  MP_PHYSIQUE_CENTRALE_2_2012: { t: 'Du minerai aux applications : le cuivre', c: ['mp-chi-02', 'sup-ph-08', 'mp-opt-02'] },
+  MP_PHYSIQUE_CENTRALE_2_2011: { t: 'Autour de l’argent', c: ['mp-chi-02', 'sup-ph-08', 'mp-opt-02'] },
+  MP_PHYSIQUE_CENTRALE_2_2010: { t: 'L’anomalie Pioneer et les anomalies de l’eau', c: ['sup-ph-02', 'mp-the-03', 'sup-ph-08'] },
+  MP_PHYSIQUE_CENTRALE_2_2009: { t: 'Le seigneur des anneaux (Saturne, Titan)', c: ['sup-ph-02', 'mp-the-03'] },
+  MP_PHYSIQUE_CENTRALE_2_2008: { t: 'Autour de l’eau ; l’humidité dans l’air', c: ['mp-chi-02', 'sup-ph-05', 'mp-chi-01'] },
+  MP_PHYSIQUE_CENTRALE_2_2007: { t: 'Analyseur de monoxyde de carbone ; le carbone et ses oxydes', c: ['mp-chi-02', 'sup-ph-08'] },
+  MP_PHYSIQUE_CENTRALE_2_2006: { t: 'Alternateurs de bicyclette, thermorégulation d’un cycliste ; le chlore', c: ['sup-ph-06', 'mp-the-02', 'sup-ph-08'] },
+
 };
 
 /** Mot-clé pour chercher d'autres sujets sur un chapitre (recherche de doc-solus.fr). */
