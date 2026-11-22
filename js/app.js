@@ -3,6 +3,7 @@ import { h, $, icon, formModal } from './util.js';
 import { dueQueue } from './srs.js';
 import { openTasks } from './stats.js';
 import { timer, onTick, remainingMs, elapsedMs, clock } from './timer.js';
+import './ambient.js';
 import { dashboard } from './views/dashboard.js';
 import { taches } from './views/taches.js';
 import { erreurs } from './views/erreurs.js';

@@ -17,6 +17,8 @@ export let timer = JSON.parse(localStorage.getItem(KEY) || 'null');
 const persist = () => (timer ? localStorage.setItem(KEY, JSON.stringify(timer)) : localStorage.removeItem(KEY));
 const listeners = new Set();
 export const onTick = (fn) => (listeners.add(fn), () => listeners.delete(fn));
+/** Crochets branchés par ambient.js (son et notification de fin). */
+export const events = { onEnd: null };
 const emit = () => listeners.forEach((fn) => fn());
 
 export const mode = () => MODES.find((m) => m.id === timer?.mode) || MODES[0];
@@ -69,6 +71,7 @@ function beep() {
   } catch { /* son indisponible */ }
 }
 function notify(text) {
+  if (events.onEnd) return events.onEnd(text);
   beep();
   if ('Notification' in window && Notification.permission === 'granted') new Notification('Cockpit MP', { body: text });
 }

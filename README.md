@@ -12,7 +12,7 @@ Tableau de bord pour une année de MP (lycée Michelet, Vanves) : tout ce qu'il 
 - **Agenda** — mois, vacances de la zone C, export `.ics` vers le calendrier de l'iPad ou du téléphone.
 - **Programme** — 103 chapitres de MP et de révisions de MPSI, chacun avec ses points de contrôle à cocher, notés de 0 à 4, avec rappel de ceux qui n'ont pas été revus.
 - **Annales** — Mines-Ponts et Centrale-Supélec, maths et physique, sessions 2006 à 2025 : liens vers l'énoncé, le rapport du jury et un corrigé en ligne, suivi des épreuves faites et des notes ; liste de sites de DS et DM corrigés. Les sujets ne sont pas recopiés dans le dépôt.
-- **Chrono** — Pomodoro, blocs de 50 minutes, épreuves de 2, 3 ou 4 heures ; temps par matière et par semaine.
+- **Chrono** — Pomodoro, blocs de 50 minutes, épreuves de 2, 3 ou 4 heures ; temps par matière et par semaine. Affichage sur l'écran verrouillé de l'iPad via le lecteur audio du système (piste muette ou bruit brun, boutons Pause et Lecture), son de fin programmé, écran maintenu allumé (`js/ambient.js`).
 - **Concours** — frise jusqu'aux écrits, simulateur de moyenne pondérée à coefficients modifiables.
 
 ## Données

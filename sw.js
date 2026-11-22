@@ -1,5 +1,5 @@
 // Mode hors ligne : réseau d'abord, cache en secours.
-const CACHE = 'cockpit-mp-v4';
+const CACHE = 'cockpit-mp-v5';
 const FILES = [
   './',
   'index.html',
@@ -8,6 +8,7 @@ const FILES = [
   'icons/icon.svg',
   'vendor/katex/katex.min.css',
   'vendor/katex/katex.min.js',
+  'js/ambient.js',
   'js/app.js',
   'js/charts.js',
   'js/data.js',

@@ -2,6 +2,7 @@ import { state, save } from '../store.js';
 import { h, icon, today, addDays, weekStart, fmtDate, fmtMin, subj, subjTag, SUBJECTS, formModal, uid } from '../util.js';
 import { timer, MODES, start, toggle, stop, remainingMs, elapsedMs, clock, onTick, mode } from '../timer.js';
 import { stackedBars, hbars, legend } from '../charts.js';
+import { engage, isActive, AMBIENT, ambientKind } from '../ambient.js';
 
 let choice = { mode: 'p50', subject: 'Mathématiques' };
 let off;
@@ -17,7 +18,7 @@ export function focus(root, _sub, rerender) {
       h('div.seg', MODES.map((m) => h('button' + (choice.mode === m.id ? '.on' : ''), { onclick: () => { choice.mode = m.id; rerender(); } }, m.label))),
       h('div.seg.subjects', SUBJECTS.map((s) => h('button' + (choice.subject === s.id ? '.on' : ''), { style: { '--c': s.color }, onclick: () => { choice.subject = s.id; rerender(); } }, h('i.dot'), s.short))),
       h('div.clock', clock((MODES.find((m) => m.id === choice.mode).work || 0) * 6e4)),
-      h('button.btn.primary.large', { onclick: () => { start(choice.mode, choice.subject); rerender(); } }, icon('play', 18), 'Démarrer'),
+      h('button.btn.primary.large', { onclick: () => { start(choice.mode, choice.subject); engage(); rerender(); } }, icon('play', 18), 'Démarrer'),
       h('p.muted', choice.mode.startsWith('e') ? 'Conditions de concours : sujet imprimé, téléphone dans une autre pièce, aucune pause.' : 'Une seule tâche par bloc. Le temps est enregistré automatiquement à la fin.'));
   } else {
     const face = h('div.clock');
@@ -37,12 +38,29 @@ export function focus(root, _sub, rerender) {
     off = onTick(draw);
     panel.append(h('div', subjTag(timer.subject)), face, h('div.progress.thin', bar), sub,
       h('div.row.center',
-        h('button.btn.large', { onclick: () => { toggle(); rerender(); } }, icon(timer.running ? 'pause' : 'play', 18), timer.running ? 'Pause' : 'Reprendre'),
+        h('button.btn.large', { onclick: () => { toggle(); if (timer?.running) engage(); rerender(); } }, icon(timer.running ? 'pause' : 'play', 18), timer.running ? 'Pause' : 'Reprendre'),
         h('button.btn.large.primary', { onclick: () => { const min = stop(); document.title = 'Cockpit MP'; if (!min) rerender(); } }, icon('stop', 18), 'Terminer et enregistrer'),
         h('button.btn.large', { onclick: () => { if (confirm('Abandonner sans enregistrer ?')) { stop({ log: false }); document.title = 'Cockpit MP'; rerender(); } } }, 'Annuler')));
     draw();
   }
+  if (timer?.running && ambientKind() !== 'off' && !isActive()) {
+    panel.append(h('button.btn.small', { onclick: () => { engage(); rerender(); } }, 'Afficher sur l’écran verrouillé'));
+  }
   root.append(panel);
+
+  // ----- Hors de la page -----
+  const s = state.settings;
+  root.append(h('section.card', h('h2', 'Écran verrouillé et arrière-plan'),
+    h('div.seg', AMBIENT.map(([v, l]) => h('button' + (ambientKind() === v ? '.on' : ''), { onclick: () => { s.ambient = v; save({ touch: false }); if (timer?.running) engage(); } }, l))),
+    h('p.muted', ambientKind() === 'off'
+      ? 'Le chrono reste dans la page. Le son de fin ne sonne que si la page est ouverte.'
+      : 'Le chrono s’affiche sur l’écran verrouillé de l’iPad comme un morceau en cours de lecture : matière, heure de fin, barre de progression, boutons Pause et Lecture. Il prend la place de la musique qui joue.' + (ambientKind() === 'brown' ? ' Le bruit brun, un souffle grave et régulier, masque les bruits autour de toi.' : ' La piste est muette.')),
+    h('label.point', h('input.check', { type: 'checkbox', checked: !!s.keepAwake, onchange: (e) => { s.keepAwake = e.target.checked; save({ touch: false }); } }),
+      h('span', 'Garder l’écran allumé pendant le chrono', h('small.muted', ' — pratique quand l’iPad est posé sur le bureau'))),
+    'Notification' in window && Notification.permission !== 'granted'
+      ? h('button.btn.small', { onclick: () => Notification.requestPermission().then(() => rerender()) }, 'Autoriser les notifications de fin')
+      : null,
+    h('p.muted', 'Sur iPad, ajoute d’abord le site à l’écran d’accueil (Partager → Sur l’écran d’accueil) : c’est la condition pour recevoir les notifications.')));
 
   // ----- Statistiques -----
   const t = today();

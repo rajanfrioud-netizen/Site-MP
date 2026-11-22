@@ -257,6 +257,7 @@ img.full { max-width: 100%; border-radius: 8px; background: #fff; }
 .rate-good { border-color: var(--good); color: var(--good-t); } .rate-easy { border-color: var(--s1); }
 @media (max-width: 860px) { .rate { bottom: calc(76px + env(safe-area-inset-bottom)); } }
 .card.center { justify-items: center; padding: 40px 20px; }
+.card > .btn { justify-self: start; }
 
 /* ---------- Agenda ---------- */
 .month { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }

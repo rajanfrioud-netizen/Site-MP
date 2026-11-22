@@ -18,6 +18,8 @@ export const defaults = () => ({
     reviewLimit: 20,
     coefs: null,
     barre: 10,
+    ambient: 'silence',
+    keepAwake: true,
   },
   kholles: [],
   ds: [],
