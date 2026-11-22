@@ -161,6 +161,26 @@ export function modal(title, body, { wide = false } = {}) {
 export function formModal(title, fields, onSubmit, { onDelete, submitLabel = 'Enregistrer' } = {}) {
   const form = h('form.form');
   for (const f of fields) {
+    if (f.type === 'checks') {
+      const box = h('div.checks');
+      const draw = () => {
+        const dep = f.depends ? form.elements[f.depends]?.value : null;
+        const opts = typeof f.options === 'function' ? f.options(dep) : f.options;
+        const chosen = new Set([...box.querySelectorAll('input:checked')].map((i) => i.value).concat(box.dataset.init ? [] : f.value || []));
+        box.dataset.init = '1';
+        let group = null;
+        box.replaceChildren();
+        for (const [val, lab, grp] of opts) {
+          if (grp && grp !== group) { group = grp; box.append(h('span.checks-group', grp)); }
+          box.append(h('label.check-row', h('input', { type: 'checkbox', name: f.name, value: val, checked: chosen.has(val) }), h('span', lab)));
+        }
+        if (!opts.length) box.append(h('small.muted', f.emptyText || 'Rien à choisir.'));
+      };
+      form.append(h('div.field', h('span', f.label), box, f.hint && h('small', f.hint)));
+      // Le champ dont il dépend est créé avant : on redessine quand il change.
+      queueMicrotask(() => { draw(); if (f.depends) form.elements[f.depends]?.addEventListener('change', draw); });
+      continue;
+    }
     let input;
     const common = { name: f.name, required: f.required, placeholder: f.placeholder };
     if (f.type === 'select') {
@@ -188,6 +208,7 @@ export function formModal(title, fields, onSubmit, { onDelete, submitLabel = 'En
     e.preventDefault();
     const v = {};
     for (const f of fields) {
+      if (f.type === 'checks') { v[f.name] = [...form.querySelectorAll(`input[name="${f.name}"]:checked`)].map((i) => i.value); continue; }
       const raw = form.elements[f.name].value;
       v[f.name] = f.type === 'number' ? (raw === '' ? null : Number(raw.replace(',', '.'))) : raw.trim();
     }

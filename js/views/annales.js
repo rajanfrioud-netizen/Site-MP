@@ -1,9 +1,11 @@
 import { state, save } from '../store.js';
-import { h, icon, today, fmtDate, fmtNum, subj, gradeClass, mean, formModal, modal } from '../util.js';
+import { h, icon, today, fmtDate, fmtRel, fmtNum, subj, gradeClass, mean, formModal, modal, diffDays } from '../util.js';
 import { start } from '../timer.js';
 import { engage } from '../ambient.js';
 import { launchClockTimer } from '../widget.js';
-import { editMistake } from '../forms.js';
+import { editMistake, editDS } from '../forms.js';
+import { PROGRAMME } from '../data.js';
+import { THEMES, KEYWORDS } from '../annales-data.js';
 
 // Vingt sessions. Les épreuves suivent la nomenclature de doc-solus.fr (MP_MATHS_MINES_1_2019…).
 const YEARS = Array.from({ length: 20 }, (_, i) => 2025 - i);
@@ -19,39 +21,98 @@ const EPREUVES = [
 ];
 const key = (c, e, y) => { const [m, n] = e.id.split('_'); return `MP_${m}_${c.id}_${n}_${y}`; };
 const DS = 'https://www.doc-solus.fr/prepa/sci/adc';
+const ALL = YEARS.flatMap((y) => CONCOURS.flatMap((c) => EPREUVES.map((e) => ({ c, e, y, k: key(c, e, y) }))));
 
-let filter = { concours: 'MINES', subject: '', todo: false };
+// ---------- Chapitres ----------
+const CHAPTERS = PROGRAMME.filter((p) => p.subject === 'Mathématiques' || p.subject === 'Physique-Chimie')
+  .flatMap((p) => p.blocks.flatMap((b) => b.chapters.map((c) => ({ ...c, subject: p.subject, block: b.name }))));
+const CH = Object.fromEntries(CHAPTERS.map((c) => [c.id, c]));
+export const chapterTitle = (id) => CH[id]?.title || id;
+
+/** Chapitres d'une épreuve : ceux corrigés par l'élève, sinon ceux de la table. */
+export const tagsOf = (k) => state.annaleTags?.[k] ?? THEMES[k]?.c ?? [];
+const themeOf = (k) => THEMES[k]?.t || '';
+/** Épreuves qui portent sur au moins un des chapitres, les plus pertinentes d'abord. */
+export function annalesFor(ids) {
+  const want = new Set(ids);
+  return ALL.map((a) => ({ ...a, hits: tagsOf(a.k).filter((id) => want.has(id)) }))
+    .filter((a) => a.hits.length)
+    .sort((a, b) => b.hits.length - a.hits.length || b.y - a.y);
+}
+const chapterOptions = (subject) => CHAPTERS.filter((c) => !subject || c.subject === subject).map((c) => [c.id, c.title, `${subj(c.subject).short} · ${c.block}`]);
+
+let filter = { concours: 'MINES', subject: '', todo: false, chapters: [] };
+
+/** Prochain DS de maths ou de physique, dans les trois semaines. */
+function nextDS() {
+  const t = today();
+  return state.ds.filter((x) => x.grade == null && x.date >= t && diffDays(x.date, t) <= 21 && (x.subject === 'Mathématiques' || x.subject === 'Physique-Chimie'))
+    .sort((a, b) => a.date.localeCompare(b.date));
+}
 
 export function annales(root, sub, rerender) {
   const isRes = sub === 'ressources';
+  if (sub === 'chapitre') {
+    const id = decodeURIComponent(location.hash.split('/')[3] || '');
+    if (CH[id]) filter = { ...filter, chapters: [id], subject: CH[id].subject };
+    history.replaceState(null, '', '#/annales');
+  } else if (sub === 'ds') {
+    const ds = nextDS().find((x) => x.chapters?.length);
+    if (ds) filter = { ...filter, chapters: [...ds.chapters], subject: ds.subject };
+    history.replaceState(null, '', '#/annales');
+  }
   root.append(h('header.page-head', h('h1', 'Annales')),
     h('div.tabs', h('a' + (!isRes ? '.on' : ''), { href: '#/annales' }, 'Mines-Ponts et Centrale'), h('a' + (isRes ? '.on' : ''), { href: '#/annales/ressources' }, 'DS, DM et corrigés ailleurs')));
   if (isRes) return ressources(root);
 
-  const total = YEARS.length * CONCOURS.length * EPREUVES.length;
+  const total = ALL.length;
   const done = Object.values(state.annales).filter((a) => a.done);
   const grades = done.map((a) => a.grade).filter((g) => g != null);
   root.append(h('section.tiles',
     h('div.tile', h('span.tile-label', 'Épreuves faites'), h('span.tile-value', `${done.length} / ${total}`), h('span.tile-sub', '2006 à 2025, maths et physique')),
     h('div.tile', h('span.tile-label', 'Note moyenne estimée'), h('span.tile-value.' + gradeClass(mean(grades)), fmtNum(mean(grades))), h('span.tile-sub', `${grades.length} épreuve${grades.length > 1 ? 's' : ''} notée${grades.length > 1 ? 's' : ''}`))));
 
-  root.append(h('p.note', 'Chaque épreuve ouvre l’énoncé, le rapport du jury et un corrigé publié en ligne. Les sujets appartiennent aux concours : le site y renvoie sans les recopier. Fais l’épreuve en temps limité, compare au corrigé, note-toi, puis transforme tes erreurs en fiches.'));
+  // ----- Prochain DS -----
+  const upcomingDS = nextDS();
+  if (upcomingDS.length) {
+    const card = h('section.card.next-ds', h('header.card-head', h('h2', 'Pour tes prochains DS'), h('span.muted', 'Entraîne-toi sur les sujets de concours qui portent sur les mêmes chapitres')));
+    for (const ds of upcomingDS.slice(0, 3)) {
+      const chs = ds.chapters || [];
+      const n = annalesFor(chs).length;
+      card.append(h('div.ds-row',
+        h('span.date', fmtDate(ds.date), h('small', ' ' + fmtRel(ds.date))),
+        h('span.grow', h('b', `${ds.topic || 'DS'} · ${subj(ds.subject).short}`),
+          chs.length ? h('span.chips', chs.map((id) => h('span.chip-s', chapterTitle(id)))) : h('small.muted', ' — chapitres non renseignés')),
+        chs.length
+          ? h('button.btn.small.primary', { onclick: () => { filter = { ...filter, chapters: [...chs], subject: ds.subject }; rerender(); } }, `${n} sujet${n > 1 ? 's' : ''}`)
+          : h('button.btn.small', { onclick: () => editDS(ds) }, 'Indiquer les chapitres')));
+    }
+    root.append(card);
+  }
 
+  // ----- Filtres -----
   const chip = (label, on, fn) => h('button.chip' + (on ? '.on' : ''), { onclick: () => { fn(); rerender(); } }, label);
+  const sel = h('select.chapter-select', { 'aria-label': 'Chapitre', onchange: (e) => { filter.chapters = e.target.value ? [e.target.value] : []; if (e.target.value) filter.subject = CH[e.target.value].subject; rerender(); } },
+    h('option', { value: '' }, 'Tous les chapitres'),
+    ['Mathématiques', 'Physique-Chimie'].filter((s) => !filter.subject || s === filter.subject).flatMap((s) =>
+      PROGRAMME.find((p) => p.subject === s).blocks.map((b) => h('optgroup', { label: `${subj(s).short} · ${b.name}` },
+        b.chapters.map((c) => { const n = annalesFor([c.id]).length; return h('option', { value: c.id, selected: filter.chapters.length === 1 && filter.chapters[0] === c.id, disabled: !n }, `${c.title} (${n})`); })))));
   root.append(h('div.filters',
-    CONCOURS.map((c) => chip(c.name, filter.concours === c.id, () => (filter.concours = c.id))),
-    chip('Maths', filter.subject === 'Mathématiques', () => (filter.subject = filter.subject === 'Mathématiques' ? '' : 'Mathématiques')),
-    chip('Physique', filter.subject === 'Physique-Chimie', () => (filter.subject = filter.subject === 'Physique-Chimie' ? '' : 'Physique-Chimie')),
+    chip('Maths', filter.subject === 'Mathématiques', () => { filter.subject = filter.subject === 'Mathématiques' ? '' : 'Mathématiques'; filter.chapters = filter.chapters.filter((id) => !filter.subject || CH[id].subject === filter.subject); }),
+    chip('Physique', filter.subject === 'Physique-Chimie', () => { filter.subject = filter.subject === 'Physique-Chimie' ? '' : 'Physique-Chimie'; filter.chapters = filter.chapters.filter((id) => !filter.subject || CH[id].subject === filter.subject); }),
+    sel,
     chip('Pas encore faites', filter.todo, () => (filter.todo = !filter.todo)),
     h('span.grow'),
     h('button.btn.small', { onclick: () => {
-      const pool = [];
-      for (const y of YEARS.filter((y) => y >= 2015)) for (const c of CONCOURS) for (const e of EPREUVES) {
-        if ((!filter.subject || e.subject === filter.subject) && c.id === filter.concours && !state.annales[key(c, e, y)]?.done) pool.push([c, e, y]);
-      }
-      if (pool.length) open(...pool[Math.floor(Math.random() * pool.length)]);
-    }, title: 'Parmi les sessions 2015 à 2025, plus proches du programme actuel' }, 'Tirer un sujet au hasard')));
+      const pool = (filter.chapters.length ? annalesFor(filter.chapters) : ALL.filter((a) => a.y >= 2015 && a.c.id === filter.concours))
+        .filter((a) => (!filter.subject || a.e.subject === filter.subject) && !state.annales[a.k]?.done);
+      if (pool.length) { const a = pool[Math.floor(Math.random() * Math.min(pool.length, filter.chapters.length ? 6 : pool.length))]; open(a.c, a.e, a.y); }
+    }, title: filter.chapters.length ? 'Parmi les sujets les plus proches de tes chapitres' : 'Parmi les sessions 2015 à 2025, plus proches du programme actuel' }, 'Tirer un sujet au hasard')));
 
+  if (filter.chapters.length) return byChapter(root, rerender);
+
+  root.append(h('p.note', 'Choisis un chapitre pour voir les sujets qui le travaillent, ou parcours par année. Chaque épreuve ouvre l’énoncé, le rapport du jury et un corrigé en ligne : fais-la en temps limité, compare, note-toi, puis transforme tes erreurs en fiches.'));
+  root.append(h('div.filters', CONCOURS.map((c) => chip(c.name, filter.concours === c.id, () => (filter.concours = c.id)))));
   const c = CONCOURS.find((x) => x.id === filter.concours);
   const card = h('section.card', h('header.card-head', h('h2', c.name + ' — filière MP'),
     h('span.muted', 'Nouveaux programmes aux concours 2015 puis 2023 : dans les sujets plus anciens, certaines parties sont hors programme')));
@@ -59,13 +120,40 @@ export function annales(root, sub, rerender) {
     const list = EPREUVES.filter((e) => (!filter.subject || e.subject === filter.subject) && (!filter.todo || !state.annales[key(c, e, y)]?.done));
     if (!list.length) continue;
     card.append(h('div.ann-year', h('b', String(y)), h('div.ann-list', list.map((e) => {
-      const a = state.annales[key(c, e, y)];
-      return h('button.ann' + (a?.done ? '.done' : ''), { onclick: () => open(c, e, y) },
-        h('i.dot', { style: { background: subj(e.subject).color } }), e.label,
-        a?.done ? h('small.' + gradeClass(a.grade), a.grade != null ? fmtNum(a.grade) : '✓') : null);
+      const k = key(c, e, y);
+      const a = state.annales[k];
+      return h('button.ann' + (a?.done ? '.done' : ''), { onclick: () => open(c, e, y), title: themeOf(k) || null },
+        h('i.dot', { style: { background: subj(e.subject).color } }),
+        h('span.ann-txt', h('span', e.label), themeOf(k) ? h('small', themeOf(k)) : null),
+        a?.done ? h('small.ann-grade.' + gradeClass(a.grade), a.grade != null ? fmtNum(a.grade) : '✓') : null);
     }))));
   }
   root.append(card);
+}
+
+function byChapter(root, rerender) {
+  const list = annalesFor(filter.chapters).filter((a) => (!filter.subject || a.e.subject === filter.subject) && (!filter.todo || !state.annales[a.k]?.done));
+  const want = new Set(filter.chapters);
+  root.append(h('section.card',
+    h('header.card-head', h('h2', filter.chapters.length === 1 ? chapterTitle(filter.chapters[0]) : `${filter.chapters.length} chapitres`),
+      h('button.btn.small', { onclick: () => { filter.chapters = []; rerender(); } }, 'Tout afficher')),
+    filter.chapters.length > 1 ? h('span.chips', filter.chapters.map((id) => h('button.chip-s.removable', { title: 'Retirer ce chapitre', onclick: () => { filter.chapters = filter.chapters.filter((x) => x !== id); rerender(); } }, chapterTitle(id), ' ✕'))) : null,
+    h('p.muted', `${list.length} épreuve${list.length > 1 ? 's' : ''} de Mines-Ponts ou Centrale, classées par nombre de chapitres en commun puis par année. Le classement vient du thème de chaque sujet : un sujet mélange toujours plusieurs chapitres, lis l’énoncé avant de te lancer.`),
+    list.length ? list.map((a) => {
+      const done = state.annales[a.k];
+      return h('button.item-main.rowlike.ann-row', { onclick: () => open(a.c, a.e, a.y) },
+        h('span.date', String(a.y)),
+        h('i.dot', { style: { background: subj(a.e.subject).color } }),
+        h('span.grow.ann-row-main',
+          h('b', `${a.c.name} · ${a.e.label}`),
+          h('small', themeOf(a.k)),
+          h('span.chips', tagsOf(a.k).map((id) => h('span.chip-s' + (want.has(id) ? '.hit' : ''), chapterTitle(id))))),
+        done?.done ? h('b.grade.' + gradeClass(done.grade), done.grade != null ? fmtNum(done.grade) : '✓') : (a.y < 2015 ? h('span.pill', 'ancien programme') : null));
+    }) : h('p.muted', 'Aucun sujet classé sur ce chapitre parmi ceux dont le thème est connu.'),
+    h('div.links-inline',
+      h('span.muted', 'Chercher d’autres sujets (CCINP, X, e3a…) : '),
+      filter.chapters.map((id) => h('a.link', { href: `https://www.doc-solus.fr/main.html?filiere=MP&words=${encodeURIComponent(KEYWORDS[id] || chapterTitle(id))}`, target: '_blank', rel: 'noopener' }, `« ${KEYWORDS[id] || chapterTitle(id)} » sur Doc Solus`)),
+      h('a.link', { href: 'https://wikiprepa.fr/concours/chapitres', target: '_blank', rel: 'noopener' }, 'WikiPrépa par chapitre'))));
 }
 
 function open(c, e, y) {
@@ -74,7 +162,11 @@ function open(c, e, y) {
   const name = `${c.name} ${e.label} MP ${y}`;
   const q = encodeURIComponent(`corrigé ${name}`);
   const link = (href, label, sub) => h('a.btn', { href, target: '_blank', rel: 'noopener' }, h('span', h('b', label), sub ? h('small.muted', ' — ' + sub) : null));
+  const tags = tagsOf(k);
   const m = modal(name, h('div.links',
+    themeOf(k) ? h('p', h('b', 'Thème : '), themeOf(k)) : h('p.muted', 'Thème non répertorié ici : ouvre l’énoncé pour le découvrir.'),
+    h('div.chips', tags.map((id) => h('a.chip-s', { href: `#/annales/chapitre/${id}`, onclick: () => m.close() }, chapterTitle(id))),
+      h('button.btn.small', { onclick: () => { m.close(); editTags(k, e.subject, name); } }, tags.length ? 'Modifier les chapitres' : 'Indiquer les chapitres')),
     link(`${DS}/bin/view.corrige.html?q=${k}`, 'Énoncé et corrigé', 'doc-solus.fr : énoncé complet, corrigé en partie payant'),
     link(`${DS}/pdf/enonces.pdf/${y}/${k}.enonce.pdf`, 'Énoncé en PDF', 'à imprimer'),
     link(`${DS}/pdf/rapports.pdf/${y}/${k}.rapport.pdf`, 'Rapport du jury', 'ce que les correcteurs attendaient'),
@@ -83,9 +175,16 @@ function open(c, e, y) {
     h('div.row',
       h('button.btn.primary', { onclick: () => { start(c.id === 'CENTRALE' ? 'e4' : 'e3', e.subject); engage(); launchClockTimer(); m.close(); location.hash = '#/focus'; } }, icon('timer', 16), c.id === 'CENTRALE' ? 'Lancer 4 h' : 'Lancer 3 h'),
       h('button.btn', { onclick: () => { m.close(); result(k, name); } }, icon('check', 16), a.done ? 'Modifier mon résultat' : 'J’ai fait cette épreuve'),
-      h('button.btn', { onclick: () => { m.close(); editMistake(null, { subject: e.subject, title: `${name} — ` }); } }, '+ Fiche d’erreur')),
+      h('button.btn', { onclick: () => { m.close(); editMistake(null, { subject: e.subject, title: `${name} — `, chapter: tags[0] ? chapterTitle(tags[0]) : '' }); } }, '+ Fiche d’erreur')),
     h('p.muted', c.id === 'MINES' ? 'Vérifie la durée sur l’en-tête du sujet (3 h ou 4 h selon l’épreuve) et choisis le chrono correspondant.' : 'Épreuve de 4 heures.'),
     a.done ? h('p', `Faite le ${fmtDate(a.date, { year: true })}${a.grade != null ? ` · ${fmtNum(a.grade)} / 20` : ''}${a.notes ? ' · ' + a.notes : ''}`) : null));
+}
+
+function editTags(k, subject, name) {
+  formModal(`Chapitres — ${name}`, [
+    { name: 'tags', label: 'Chapitres travaillés par ce sujet', type: 'checks', value: tagsOf(k), options: () => chapterOptions(subject),
+      hint: THEMES[k] ? 'Proposition faite d’après le thème du sujet ; corrige-la après l’avoir lu ou fait.' : null },
+  ], (v) => { state.annaleTags = { ...(state.annaleTags || {}), [k]: v.tags }; save(); });
 }
 
 function result(k, name) {

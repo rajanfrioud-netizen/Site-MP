@@ -3,6 +3,7 @@ import { h, icon, today, fmtRel, diffDays, subj, uid, formModal, SUBJECTS } from
 import { PROGRAMME, LEVELS } from '../data.js';
 import { editMistake } from '../forms.js';
 import { interro } from './interro.js';
+import { annalesFor } from './annales.js';
 
 const open = new Set(['Mathématiques']);
 
@@ -105,7 +106,8 @@ function chapterRow(c, rerender, custom) {
       h('p.muted', 'Coche un point seulement si tu peux l’énoncer et l’utiliser sans tes notes.'),
       pts.map((pt, i) => h('label.point', h('input.check', { type: 'checkbox', checked: known.has(i), onchange: () => toggle(i) }), h('span', pt))),
       h('div.row',
-        h('button.btn.small', { onclick: () => editMistake(null, { chapter: c.title, subject: c.subject }) }, '+ Fiche d’erreur sur ce chapitre'))));
+        h('button.btn.small', { onclick: () => editMistake(null, { chapter: c.title, subject: c.subject }) }, '+ Fiche d’erreur sur ce chapitre'),
+        annalesFor([c.id]).length ? h('a.btn.small', { href: `#/annales/chapitre/${c.id}` }, `Annales sur ce chapitre (${annalesFor([c.id]).length})`) : null)));
 }
 
 function addChapter() {

@@ -98,6 +98,14 @@ export function insights() {
     out.unshift({ level: 'mid', href: '#/notes/ds', title: `DS de ${soonDS.subject} dans ${diffDays(soonDS.date, t)} j, sans plan de préparation`,
       text: 'Ouvre Notes et clique sur « Planifier la préparation » : cinq étapes réparties sur la semaine.' });
   }
+  const dsCh = upcoming(state.ds).find((x) => diffDays(x.date, t) <= 10 && x.chapters?.length);
+  if (dsCh) {
+    out.push({ level: 'mid', href: '#/annales/ds', title: `DS de ${dsCh.subject} ${diffDays(dsCh.date, t) <= 1 ? 'demain' : `dans ${diffDays(dsCh.date, t)} j`} : entraîne-toi sur ses chapitres`,
+      text: 'Les annales Mines et Centrale qui portent sur les mêmes chapitres sont prêtes dans l’onglet Annales.' });
+  } else {
+    const noCh = upcoming(state.ds).find((x) => diffDays(x.date, t) <= 10 && (x.subject === 'Mathématiques' || x.subject === 'Physique-Chimie'));
+    if (noCh) out.push({ level: 'mid', href: '#/annales', title: `Quels chapitres au DS de ${noCh.subject} ?`, text: 'Indique-les dans le DS : le site te proposera les annales correspondantes.' });
+  }
   const analysed = ds.filter((x) => x.loss);
   if (analysed.length) {
     const sums = LOSS.map(([k, label, tip]) => ({ label, tip, v: analysed.reduce((a, x) => a + (x.loss[k] || 0), 0) / analysed.length })).sort((a, b) => b.v - a.v)[0];

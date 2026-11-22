@@ -36,6 +36,9 @@ export function editDS(ds, preset = {}) {
     { name: 'subject', label: 'Matière', type: 'select', options: subjOpts(), value: d.subject, half: true },
     { name: 'date', label: 'Date', type: 'date', value: d.date, required: true, half: true },
     { name: 'topic', label: 'Intitulé', value: d.topic, placeholder: 'DS5 — 3 h' },
+    { name: 'chapters', label: 'Chapitres au programme du DS', type: 'checks', depends: 'subject', value: d.chapters || [],
+      options: (sub) => (PROGRAMME.find((p) => p.subject === sub)?.blocks || []).flatMap((b) => b.chapters.map((c) => [c.id, c.title, b.name])),
+      emptyText: 'Pas de liste de chapitres pour cette matière.', hint: 'Sert à proposer les annales qui portent sur ces chapitres' },
     { name: 'grade', label: 'Note / 20', type: 'number', value: d.grade, min: 0, max: 20, step: 0.01, half: true, hint: 'Vide tant que non rendu' },
     { name: 'targetGrade', label: 'Objectif / 20', type: 'number', value: d.targetGrade, min: 0, max: 20, step: 0.5, half: true },
   ];
@@ -65,7 +68,7 @@ export function planDS(ds) {
     [7, 'Cours', 90, `Préparer ${short} : lister les chapitres, interro de cours sur chacun`],
     [5, 'TD', 120, `Préparer ${short} : refaire sans correction les exercices ratés en TD`],
     [4, 'Révisions', 45, `Préparer ${short} : revoir toutes les fiches d’erreur de la matière`],
-    [2, 'Annale', 180, `Préparer ${short} : un sujet en temps limité (DS de l’an dernier ou annale)`],
+    [2, 'Annale', 180, ds.chapters?.length ? `Préparer ${short} : une annale sur ses chapitres en temps limité (onglet Annales → Pour tes prochains DS)` : `Préparer ${short} : un sujet en temps limité (DS de l’an dernier ou annale)`],
     [1, 'Révisions', 30, `Préparer ${short} : relire formulaire et erreurs du sujet blanc, se coucher tôt`],
   ];
   const t = today();

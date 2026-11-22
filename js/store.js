@@ -36,6 +36,7 @@ export const defaults = () => ({
   checks: {}, // id de chapitre -> indices des points sus
   annales: {}, // id d'épreuve -> { done, date, grade, notes }
   interros: [], // { date, subject, total, ok }
+  annaleTags: {}, // id d'épreuve -> chapitres corrigés par l'élève
   activity: {},
   legacy: {},
   lastBackup: '',
@@ -82,7 +83,7 @@ export function normalize(raw) {
   s.ds = (raw.ds || []).map((x) => ({
     id: x.id || uid('ds'), subject: x.subject || 'Autre', date: x.date || today(), topic: x.topic || '',
     grade: num(x.grade), targetGrade: num(x.targetGrade), classAvg: num(x.classAvg), notes: x.notes || '',
-    rank: num(x.rank), classSize: num(x.classSize), best: num(x.best), loss: x.loss && typeof x.loss === 'object' ? x.loss : null,
+    rank: num(x.rank), classSize: num(x.classSize), best: num(x.best), chapters: Array.isArray(x.chapters) ? x.chapters : [], loss: x.loss && typeof x.loss === 'object' ? x.loss : null,
   }));
   s.mistakes = (raw.mistakes || []).map((m) => {
     const id = m.id || uid('m');
@@ -113,6 +114,7 @@ export function normalize(raw) {
   s.checks = { ...(raw.checks || {}) };
   s.annales = { ...(raw.annales || {}) };
   s.interros = [...(raw.interros || [])];
+  s.annaleTags = { ...(raw.annaleTags || {}) };
 
   // v3 : l'avancement du programme utilisait d'autres identifiants de chapitres (MPSI).
   // On le conserve tel quel pour ne rien perdre, sans prétendre le faire correspondre.

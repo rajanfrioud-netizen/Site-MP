@@ -258,6 +258,11 @@ img.full { max-width: 100%; border-radius: 8px; background: #fff; }
 @media (max-width: 860px) { .rate { bottom: calc(76px + env(safe-area-inset-bottom)); } }
 .card.center { justify-items: center; padding: 40px 20px; }
 .card > .btn { justify-self: start; }
+.checks { display: grid; gap: 2px; max-height: 260px; overflow-y: auto; padding: 8px 10px; border: 1px solid var(--border); border-radius: 10px; }
+.checks-group { font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-top: 8px; }
+.checks-group:first-child { margin-top: 0; }
+.check-row { display: flex; gap: 8px; align-items: flex-start; padding: 4px 0; font-size: 14px; cursor: pointer; }
+.check-row input { width: 18px; height: 18px; margin: 1px 0 0; flex: none; accent-color: var(--s1); }
 .steps-list { margin: 0; padding-left: 22px; display: grid; gap: 10px; color: var(--text2); }
 .steps-list li { padding-left: 4px; }
 .steps-list .btn { margin-right: 4px; }
@@ -309,6 +314,26 @@ button.chapter-title[aria-expanded="true"] span::before { content: '▾ '; }
 .card-head + .with-action { border-top: 0; }
 @media (max-width: 560px) { .with-action { flex-wrap: wrap; padding-bottom: 8px; } }
 /* ---------- Annales ---------- */
+.chips { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.chip-s { display: inline-block; padding: 1px 8px; border-radius: 12px; background: var(--surface2); color: var(--text2); font-size: 12px; font-weight: 600; text-decoration: none; border: 1px solid transparent; }
+.chip-s.hit { background: color-mix(in srgb, var(--s1) 16%, transparent); color: var(--text); border-color: color-mix(in srgb, var(--s1) 40%, transparent); }
+button.chip-s { cursor: pointer; }
+.chapter-select { max-width: 340px; flex: 1 1 220px; }
+.ds-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--border); flex-wrap: wrap; }
+.card-head + .ds-row { border-top: 0; }
+.ds-row .grow { display: grid; gap: 4px; min-width: 0; }
+.ann-row { align-items: flex-start; }
+.ann-row .date { padding-top: 1px; min-width: 44px; }
+.ann-row .dot { margin-top: 6px; }
+.ann-row-main { display: grid; gap: 3px; min-width: 0; }
+.ann-row-main small { color: var(--text2); }
+.ann-txt { display: grid; min-width: 0; text-align: left; line-height: 1.25; }
+.ann-txt small { font-weight: 500; color: var(--muted); font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ann { min-height: 48px; min-width: 0; overflow: hidden; }
+.ann-list > * { min-width: 0; }
+.ann-year > div { min-width: 0; }
+.ann-grade { margin-left: auto; }
+.links-inline { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; font-size: 13px; padding-top: 6px; border-top: 1px solid var(--border); }
 .ann-year { display: grid; grid-template-columns: 56px 1fr; gap: 6px 12px; padding: 10px 0; border-top: 1px solid var(--border); align-items: start; }
 .card-head + .ann-year, h2 + .ann-year { border-top: 0; }
 .ann-year > b { font-size: 17px; font-variant-numeric: tabular-nums; padding-top: 6px; }
@@ -391,3 +416,7 @@ body:has(.onboard) { display: block; }
 body:has(.onboard) #side, body:has(.onboard) #tabs { display: none; }
 pre { white-space: pre-wrap; font-size: 12px; overflow: auto; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+/* Cases à cocher dans un formulaire : ne pas hériter du style des champs texte. */
+.field .checks input[type="checkbox"] { width: 18px; height: 18px; min-height: 0; padding: 0; margin: 1px 0 0; border: 0; flex: none; }
+.ann-list { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.field { align-content: start; }

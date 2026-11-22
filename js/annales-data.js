@@ -1,0 +1,119 @@
+// Thèmes des épreuves écrites MP (Mines-Ponts, Centrale-Supélec), d'après les pages
+// « Thème de l'épreuve » de doc-solus.fr (recherche de novembre 2026).
+// Les chapitres associés (identifiants de js/data.js) sont déduits du thème : ce sont les
+// chapitres qui servent le plus probablement, pas un relevé question par question.
+// Chacun peut les corriger depuis l'onglet Annales (bouton « Modifier les chapitres »).
+// Une épreuve absente de cette table a un thème inconnu ici.
+
+export const THEMES = {
+  // ---------- Mines-Ponts, Mathématiques 1 ----------
+  MP_MATHS_MINES_1_2025: { t: 'Inégalités de Khintchine (espaces probabilisés finis, Hölder)', c: ['mp-pro-03', 'sup-ma-09', 'sup-ma-03'] },
+  MP_MATHS_MINES_1_2024: { t: 'Intégrale de Dirichlet généralisée et calcul d’une espérance', c: ['mp-ana-10', 'mp-ana-12', 'mp-ana-11', 'mp-pro-03'] },
+  MP_MATHS_MINES_1_2023: { t: 'Théorème de stabilité de Liapounov', c: ['mp-ana-13', 'mp-alg-05', 'mp-alg-10', 'mp-ana-03'] },
+  MP_MATHS_MINES_1_2022: { t: 'Formule asymptotique de Hardy-Ramanujan (partitions d’un entier)', c: ['mp-ana-08', 'mp-ana-06', 'mp-ana-05', 'sup-ma-08'] },
+  MP_MATHS_MINES_1_2021: { t: 'Théorème de De Moivre-Laplace', c: ['mp-pro-02', 'mp-pro-03', 'sup-ma-02', 'mp-ana-05'] },
+  MP_MATHS_MINES_1_2020: { t: 'Endomorphismes nilpotents', c: ['mp-alg-07', 'mp-alg-06', 'mp-alg-03'] },
+  MP_MATHS_MINES_1_2019: { t: 'Comportement asymptotique de sommes de séries entières, équation d’Airy', c: ['mp-ana-08', 'mp-ana-13', 'mp-ana-05'] },
+  MP_MATHS_MINES_1_2016: { t: 'Autour de l’inégalité de Hoffman-Wielandt (matrices bistochastiques)', c: ['mp-alg-10', 'mp-alg-09', 'sup-ma-07'] },
+  MP_MATHS_MINES_1_2015: { t: 'Opérateur de Volterra et équations différentielles', c: ['mp-ana-13', 'mp-ana-01', 'sup-ma-04'] },
+  MP_MATHS_MINES_1_2011: { t: 'Critère de diagonalisabilité de Klarès, décomposition de Dunford', c: ['mp-alg-05', 'mp-alg-06', 'mp-alg-07'] },
+  MP_MATHS_MINES_1_2009: { t: 'Problème des moments, fonctions caractéristiques', c: ['mp-ana-12', 'mp-ana-10'] },
+
+  // ---------- Mines-Ponts, Mathématiques 2 ----------
+  MP_MATHS_MINES_2_2025: { t: 'Critère de Schur-Cohn et généralisation au cas non inversible', c: ['sup-ma-05', 'mp-alg-04', 'mp-alg-03'] },
+  MP_MATHS_MINES_2_2022: { t: 'Autour des exponentielles de matrices', c: ['mp-ana-13', 'mp-alg-05', 'mp-ana-08'] },
+  MP_MATHS_MINES_2_2021: { t: 'Fonctions de matrices symétriques, continuité et convexité', c: ['mp-alg-10', 'sup-ma-03', 'mp-ana-03'] },
+  MP_MATHS_MINES_2_2019: { t: 'Majoration du rayon spectral de la matrice de Hilbert', c: ['mp-alg-10', 'mp-alg-08', 'mp-ana-10'] },
+  MP_MATHS_MINES_2_2017: { t: 'Sous-groupes compacts du groupe linéaire', c: ['mp-alg-01', 'mp-ana-04', 'mp-alg-09'] },
+  MP_MATHS_MINES_2_2016: { t: 'Théorème taubérien de Hardy-Littlewood-Karamata', c: ['mp-ana-08', 'mp-ana-07', 'mp-ana-11', 'mp-ana-10'] },
+  MP_MATHS_MINES_2_2015: { t: 'Norme d’une matrice aléatoire', c: ['mp-pro-03', 'mp-alg-10', 'mp-ana-03'] },
+
+  // ---------- Centrale-Supélec, Mathématiques 1 ----------
+  MP_MATHS_CENTRALE_1_2025: { t: 'Irrationalité de ζ(2) (ppcm des premiers entiers, intégrale double)', c: ['mp-alg-02', 'mp-ana-10', 'sup-ma-08'] },
+  MP_MATHS_CENTRALE_1_2024: { t: 'Inégalité de Carleman', c: ['mp-ana-05', 'sup-ma-03', 'sup-ma-01'] },
+  MP_MATHS_CENTRALE_1_2023: { t: 'Sur le calcul ombral', c: ['sup-ma-05', 'mp-alg-03', 'sup-ma-08'] },
+  MP_MATHS_CENTRALE_1_2022: { t: 'Exemples de contraintes symplectiques linéaires', c: ['mp-alg-09', 'mp-alg-03', 'mp-alg-08'] },
+  MP_MATHS_CENTRALE_1_2021: { t: 'Loi du demi-cercle', c: ['mp-pro-03', 'mp-alg-10', 'sup-ma-08'] },
+  MP_MATHS_CENTRALE_1_2020: { t: 'Fonctions arithmétiques multiplicatives et applications', c: ['mp-alg-02', 'sup-ma-08', 'mp-ana-05'] },
+  MP_MATHS_CENTRALE_1_2019: { t: 'Matrices compagnons, endomorphismes cycliques, décomposition de Frobenius', c: ['mp-alg-06', 'mp-alg-03', 'mp-alg-04'] },
+  MP_MATHS_CENTRALE_1_2018: { t: 'Aplatissement aléatoire d’un ensemble de points en grande dimension', c: ['mp-pro-03', 'mp-alg-08'] },
+  MP_MATHS_CENTRALE_1_2017: { t: 'Sur la partie symétrique d’une matrice', c: ['mp-alg-10', 'mp-alg-04'] },
+  MP_MATHS_CENTRALE_1_2016: { t: 'Matrices positives (im)primitives', c: ['mp-alg-05', 'mp-alg-04', 'mp-ana-04'] },
+  MP_MATHS_CENTRALE_1_2015: { t: 'Autour de la transformation de Radon', c: ['mp-ana-12', 'mp-ana-10', 'mp-ana-14'] },
+
+  // ---------- Centrale-Supélec, Mathématiques 2 ----------
+  MP_MATHS_CENTRALE_2_2025: { t: 'Modèle probabiliste du ferromagnétisme', c: ['mp-pro-02', 'mp-pro-03', 'sup-ma-08'] },
+  MP_MATHS_CENTRALE_2_2023: { t: 'Théorème central limite (suites de fonctions)', c: ['mp-pro-03', 'mp-ana-07', 'mp-ana-11'] },
+  MP_MATHS_CENTRALE_2_2022: { t: 'Séries aléatoires de Rademacher, dérivation de sommes de séries de fonctions', c: ['mp-ana-07', 'mp-pro-03', 'mp-ana-05'] },
+  MP_MATHS_CENTRALE_2_2021: { t: 'Inégalités de Bernstein (polynômes de Tchebychev, transformée de Fourier)', c: ['sup-ma-05', 'mp-ana-12', 'mp-ana-07'] },
+  MP_MATHS_CENTRALE_2_2020: { t: 'Espaces à noyau reproduisant', c: ['mp-alg-08', 'mp-alg-10', 'mp-ana-01'] },
+  MP_MATHS_CENTRALE_2_2019: { t: 'Dénombrabilité, développement dyadique et loi uniforme', c: ['mp-pro-01', 'mp-ana-06', 'mp-pro-02'] },
+  MP_MATHS_CENTRALE_2_2018: { t: 'Fonctions harmoniques et problème de Dirichlet', c: ['mp-ana-14', 'mp-ana-15', 'mp-ana-04'] },
+  MP_MATHS_CENTRALE_2_2015: { t: 'Fonction digamma', c: ['mp-ana-12', 'mp-ana-07', 'mp-ana-05'] },
+  MP_MATHS_CENTRALE_2_2014: { t: 'Polynômes de Tchebychev et de Dickson', c: ['sup-ma-05', 'mp-alg-02'] },
+  MP_MATHS_CENTRALE_2_2013: { t: 'Décomposition polaire et applications', c: ['mp-alg-10', 'mp-alg-09'] },
+  MP_MATHS_CENTRALE_2_2012: { t: 'Suites récurrentes linéaires et matrices de Hankel', c: ['mp-alg-05', 'sup-ma-07'] },
+
+  // ---------- Mines-Ponts, Physique 1 ----------
+  MP_PHYSIQUE_MINES_1_2025: { t: 'Photons, spectre de l’hydrogène, barrière de potentiel', c: ['mp-qua-04', 'mp-qua-01', 'mp-qua-02'] },
+  MP_PHYSIQUE_MINES_1_2024: { t: 'Des objets astronomiques, de Mars à Sirius', c: ['sup-ph-02', 'mp-the-03'] },
+  MP_PHYSIQUE_MINES_1_2023: { t: 'Fonctions spéciales (tir balistique, fonction W de Lambert)', c: ['sup-ph-02'] },
+  MP_PHYSIQUE_MINES_1_2022: { t: 'L’anémométrie à fil chaud', c: ['mp-the-02', 'sup-ph-01', 'mp-sig-01'] },
+  MP_PHYSIQUE_MINES_1_2019: { t: 'Physique en Arctique (traîneau, croissance de la banquise)', c: ['mp-mec-03', 'mp-the-02', 'mp-em-06'] },
+  MP_PHYSIQUE_MINES_1_2018: { t: 'Interaction laser-plasma à haut éclairement', c: ['mp-em-06', 'mp-em-05', 'mp-em-04'] },
+  MP_PHYSIQUE_MINES_1_2017: { t: 'Les memristors', c: ['sup-ph-01', 'mp-em-03', 'mp-qua-04'] },
+  MP_PHYSIQUE_MINES_1_2016: { t: 'Passerelle mise en vibration par les piétons (résonance)', c: ['sup-ph-02', 'mp-sig-01', 'sup-ph-01'] },
+  MP_PHYSIQUE_MINES_1_2015: { t: 'Propulsion ionique des engins spatiaux', c: ['mp-em-01', 'mp-em-02', 'sup-ph-02'] },
+
+  // ---------- Mines-Ponts, Physique 2 ----------
+  MP_PHYSIQUE_MINES_2_2025: { t: 'Mesure et caractérisation du champ de pesanteur (paquets d’ondes)', c: ['mp-qua-02', 'mp-opt-02', 'sup-ph-02'] },
+  MP_PHYSIQUE_MINES_2_2024: { t: 'Thermodynamique du froid (supraconducteurs, gaz de van der Waals)', c: ['mp-the-01', 'sup-ph-05', 'mp-em-02'] },
+  MP_PHYSIQUE_MINES_2_2023: { t: 'Déformations élastiques', c: ['mp-the-04', 'mp-the-05', 'sup-ph-03'] },
+  MP_PHYSIQUE_MINES_2_2021: { t: 'Le marteau de Thor (naine blanche)', c: ['sup-ph-02', 'mp-qua-02'] },
+  MP_PHYSIQUE_MINES_2_2020: { t: 'Loi de Wiedemann-Franz (conductivités électrique et thermique)', c: ['mp-the-02', 'mp-em-06', 'mp-the-04'] },
+  MP_PHYSIQUE_MINES_2_2019: { t: 'L’indice et le froid (indice de l’air, désaimantation adiabatique)', c: ['mp-opt-02', 'mp-the-04', 'sup-ph-05'] },
+  MP_PHYSIQUE_MINES_2_2017: { t: 'La capacité thermique des gaz', c: ['mp-the-05', 'mp-the-04', 'mp-qua-03'] },
+  MP_PHYSIQUE_MINES_2_2015: { t: 'Nature de la gravitation', c: ['sup-ph-02', 'mp-em-01'] },
+
+  // ---------- Centrale-Supélec, Physique-chimie 1 ----------
+  MP_PHYSIQUE_CENTRALE_1_2025: { t: 'Observation et protection côtières (radar HF)', c: ['mp-em-05', 'mp-sig-01', 'sup-ph-07'] },
+  MP_PHYSIQUE_CENTRALE_1_2024: { t: 'Quelques aspects du transport ferroviaire', c: ['mp-mec-03', 'sup-ph-06'] },
+  MP_PHYSIQUE_CENTRALE_1_2023: { t: 'Atténuer le changement climatique (écran au point de Lagrange, rénovation des bâtiments)', c: ['mp-mec-02', 'mp-the-02', 'mp-the-03'] },
+  MP_PHYSIQUE_CENTRALE_1_2022: { t: 'Sujet comprenant une ailette de refroidissement', c: ['mp-the-02'] },
+  MP_PHYSIQUE_CENTRALE_1_2021: { t: 'La ruée vers l’or (nanoparticules d’or)', c: ['mp-em-06', 'mp-em-08', 'sup-ph-08'] },
+  MP_PHYSIQUE_CENTRALE_1_2020: { t: 'Énergie d’origine nucléaire', c: ['mp-the-02', 'mp-the-01', 'sup-ph-05'] },
+  MP_PHYSIQUE_CENTRALE_1_2019: { t: 'Vie et mort d’un photon (atomes de Rydberg)', c: ['mp-qua-01', 'mp-em-07', 'sup-ph-02'] },
+  MP_PHYSIQUE_CENTRALE_1_2018: { t: 'Étude de la couronne solaire', c: ['mp-em-06', 'mp-the-02', 'mp-the-04'] },
+  MP_PHYSIQUE_CENTRALE_1_2017: { t: 'Mouvements dans le champ de pesanteur terrestre', c: ['mp-mec-02', 'mp-mec-01', 'mp-qua-03'] },
+  MP_PHYSIQUE_CENTRALE_1_2016: { t: 'Confinement de particules', c: ['mp-em-02', 'sup-ph-02', 'mp-qua-03'] },
+  MP_PHYSIQUE_CENTRALE_1_2015: { t: 'Loi de Moore (électrocinétique, cristallographie, modèle de Drude)', c: ['sup-ph-01', 'sup-ph-08', 'mp-em-06'] },
+
+  // ---------- Centrale-Supélec, Physique-chimie 2 ----------
+  MP_PHYSIQUE_CENTRALE_2_2025: { t: 'Faire l’image d’une exoplanète', c: ['mp-opt-03', 'mp-opt-01', 'mp-opt-02'] },
+  MP_PHYSIQUE_CENTRALE_2_2024: { t: 'Structure de la matière', c: ['mp-qua-01', 'sup-ph-08', 'mp-the-04'] },
+  MP_PHYSIQUE_CENTRALE_2_2023: { t: 'Errare humanum est : deux découvertes qui n’en furent pas', c: [] },
+  MP_PHYSIQUE_CENTRALE_2_2021: { t: 'Purification de l’eau du circuit primaire d’une centrale nucléaire', c: ['mp-chi-02', 'mp-chi-03', 'sup-ph-08'] },
+  MP_PHYSIQUE_CENTRALE_2_2019: { t: 'Capture d’empreintes digitales, stockage de déchets radioactifs', c: ['mp-opt-01', 'mp-the-02', 'mp-chi-02'] },
+  MP_PHYSIQUE_CENTRALE_2_2017: { t: 'Expérimenter avec un morceau de scotch', c: ['mp-mec-03'] },
+};
+
+/** Mot-clé pour chercher d'autres sujets sur un chapitre (recherche de doc-solus.fr). */
+export const KEYWORDS = {
+  'mp-alg-01': 'groupes', 'mp-alg-02': 'arithmétique', 'mp-alg-03': 'algèbre linéaire', 'mp-alg-04': 'valeurs propres',
+  'mp-alg-05': 'diagonalisation', 'mp-alg-06': 'polynômes d’endomorphismes', 'mp-alg-07': 'nilpotent', 'mp-alg-08': 'espaces préhilbertiens',
+  'mp-alg-09': 'isométries', 'mp-alg-10': 'théorème spectral',
+  'mp-ana-01': 'espaces vectoriels normés', 'mp-ana-02': 'topologie', 'mp-ana-03': 'continuité', 'mp-ana-04': 'compacité',
+  'mp-ana-05': 'séries numériques', 'mp-ana-06': 'familles sommables', 'mp-ana-07': 'séries de fonctions', 'mp-ana-08': 'séries entières',
+  'mp-ana-09': 'fonctions vectorielles', 'mp-ana-10': 'intégrales généralisées', 'mp-ana-11': 'convergence dominée', 'mp-ana-12': 'intégrales à paramètre',
+  'mp-ana-13': 'équations différentielles', 'mp-ana-14': 'calcul différentiel', 'mp-ana-15': 'extremum',
+  'mp-pro-01': 'probabilités', 'mp-pro-02': 'variables aléatoires', 'mp-pro-03': 'espérance', 'mp-pro-04': 'fonctions génératrices',
+  'mp-mec-01': 'référentiel non galiléen', 'mp-mec-02': 'force d’inertie', 'mp-mec-03': 'frottement solide',
+  'mp-sig-01': 'filtrage', 'mp-sig-02': 'échantillonnage',
+  'mp-opt-01': 'optique ondulatoire', 'mp-opt-02': 'interférences', 'mp-opt-03': 'trous d’Young', 'mp-opt-04': 'Michelson',
+  'mp-em-01': 'électrostatique', 'mp-em-02': 'magnétostatique', 'mp-em-03': 'équations de Maxwell', 'mp-em-04': 'vecteur de Poynting',
+  'mp-em-05': 'ondes électromagnétiques', 'mp-em-06': 'plasma', 'mp-em-07': 'conducteur parfait', 'mp-em-08': 'rayonnement dipolaire',
+  'mp-the-01': 'machines thermiques', 'mp-the-02': 'diffusion thermique', 'mp-the-03': 'rayonnement thermique', 'mp-the-04': 'facteur de Boltzmann',
+  'mp-the-05': 'capacité thermique',
+  'mp-qua-01': 'physique quantique', 'mp-qua-02': 'paquet d’ondes', 'mp-qua-03': 'puits de potentiel', 'mp-qua-04': 'effet tunnel',
+  'mp-chi-01': 'thermochimie', 'mp-chi-02': 'thermochimie', 'mp-chi-03': 'courbes intensité-potentiel', 'mp-chi-04': 'corrosion',
+};
