@@ -171,7 +171,7 @@ function byChapter(root, rerender) {
     h('div.links-inline',
       h('span.muted', 'Chercher d’autres sujets (CCINP, X, e3a…) : '),
       siOnly
-        ? [h('a.link', { href: 'https://www.upsti.fr/espace-etudiants/annales-de-concours', target: '_blank', rel: 'noopener' }, 'UPSTI : sujets et corrigés de SI (CCINP, e3a…)')]
+        ? [h('a.link', { href: 'https://www.upsti.fr/espace-etudiants/annales-de-concours', target: '_blank', rel: 'noopener' }, 'UPSTI : sujets et corrigés de SI (CCINP, e3a…)'), h('a.link', { href: '#/annales/ressources' }, 'Cours et TD corrigés de SI')]
         : filter.chapters.filter((id) => kindOfChapter(id) !== 'si').map((id) => h('a.link', { href: `https://www.doc-solus.fr/main.html?filiere=MP&words=${encodeURIComponent(KEYWORDS[id] || chapterTitle(id))}`, target: '_blank', rel: 'noopener' }, `« ${KEYWORDS[id] || chapterTitle(id)} » sur Doc Solus`)),
       h('a.link', { href: 'https://wikiprepa.fr/concours/chapitres', target: '_blank', rel: 'noopener' }, 'WikiPrépa par chapitre'))));
 }
@@ -236,6 +236,20 @@ const RESSOURCES = [
     ['http://pikeroen.free.fr/wordpress/index.php/devoirs-problemes-et-corriges/devoirs-et-corriges/', 'Pikeroen — devoirs et corrigés', 'DS, DM et concours blancs corrigés en PDF ; vérifie la filière de chaque sujet.'],
     ['http://benjamin.mollier.free.fr/index.php?page=DS&annee=2023', 'Benjamin Mollier — devoirs surveillés', 'Sujets et corrigés ; niveau à vérifier (plusieurs thèmes de première année).'],
     ['https://wikiprepa.fr/concours?filiere=mp&matiere=physique', 'WikiPrépa — physique MP', 'Sujets de concours avec corrigés détaillés question par question quand ils existent.'],
+  ]],
+  ['Sciences industrielles — cours et TD corrigés', [
+    ['http://nmesnier.free.fr/SII-MPSI.html', 'Nicolas Mesnier — SII en MPSI', 'Cours, présentations, TD et éléments de corrigé en dix séquences : idéal pour reprendre les bases de sup.'],
+    ['http://florestan.mathurin.free.fr/MPSI/Site/Semainier.html', 'Florestan Mathurin — semainier MPSI', 'Pour chaque semaine : cours, TD et corrigé.'],
+    ['https://www.cpge-sii.com/mecanique/meca-2/dynamique/', 'cpge-sii.com — mécanique de spé', 'Torseurs cinétique et dynamique, PFD, avec corrections et extraits de sujets de concours.'],
+    ['https://www.alloschool.com/course/sciences-industrielles-de-l-ingenieur-sii-mp', 'AlloSchool — SII MP', 'TD corrigés par chapitre : performances des systèmes asservis, dynamique… (version MPSI sur le même site).'],
+    ['https://apsim.ma/sujets-cnc/mp-psi.php', 'APSIM — TD d’asservissement et sujets CNC corrigés', 'Recueils de TD d’asservissement (Bode, précision, correcteurs) et sujets du concours marocain CNC MP, proches de ceux de Centrale.'],
+    ['https://xpessoles-cpge.fr', 'Xavier Pessoles — SII en CPGE', 'Site d’un professeur de SII (cours et exercices) ; contenu à vérifier sur place.'],
+  ]],
+  ['Sciences industrielles — annales', [
+    ['https://www.upsti.fr/espace-etudiants/annales-de-concours', 'UPSTI — annales de concours', 'Sujets et corrigés de tous les concours (Mines, Centrale, CCINP, e3a) rédigés par des professeurs de SII.'],
+    ['https://groupe-reussite.fr/ressources/annales-si-centrale-supelec/', 'Groupe Réussite — SI Centrale', 'Sujets et corrigés MP et PSI.'],
+    ['https://groupe-reussite.fr/ressources/annales-si-mines-pont/', 'Groupe Réussite — SI Mines-Ponts', 'Sujets et corrigés.'],
+    ['https://groupe-reussite.fr/ressources/annales-si-concours-e3a/', 'Groupe Réussite — SI e3a', 'Sujets plus courts, bons pour s’entraîner chapitre par chapitre.'],
   ]],
   ['Annales et corrigés de concours', [
     ['https://www.concours-centrale-supelec.fr/sujets-rapports', 'Centrale-Supélec — sujets et rapports', 'Site officiel, toutes les sessions.'],
