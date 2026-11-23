@@ -1,5 +1,5 @@
 // Mode hors ligne : réseau d'abord, cache en secours.
-const CACHE = 'cockpit-mp-v9';
+const CACHE = 'cockpit-mp-v10';
 const FILES = [
   './',
   'index.html',

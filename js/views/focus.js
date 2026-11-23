@@ -6,6 +6,8 @@ import { engage, isActive, AMBIENT, ambientKind } from '../ambient.js';
 import { launchClockTimer } from '../widget.js';
 
 let choice = { mode: 'p50', subject: 'Mathématiques' };
+let view = 'jour'; // 'jour' | 'semaine'
+let weekOffset = 0; // 0 = semaine en cours, -1 = semaine précédente…
 let off;
 
 export function focus(root, _sub, rerender) {
@@ -78,14 +80,47 @@ export function focus(root, _sub, rerender) {
     h('div.tile', h('span.tile-label', 'Total'), h('span.tile-value', fmtMin(sum(state.sessions))), h('span.tile-sub', `${state.sessions.length} séances`))));
 
   if (state.sessions.length) {
-    const cols = [];
-    for (let i = 7; i >= 0; i--) {
-      const s0 = addDays(ws, -7 * i), s1 = addDays(s0, 6);
-      const l = state.sessions.filter((s) => s.date >= s0 && s.date <= s1);
-      cols.push({ label: fmtDate(s0, { weekday: false }), title: `Semaine du ${fmtDate(s0, { weekday: false })}`,
-        parts: used.map((u) => ({ name: u.short, color: u.color, value: sum(l.filter((s) => s.subject === u.id)) })) });
+    const parts = (l) => used.map((u) => ({ name: u.short, color: u.color, value: sum(l.filter((s) => s.subject === u.id)) }));
+    const seg = h('div.seg.small',
+      h('button' + (view === 'jour' ? '.on' : ''), { onclick: () => { view = 'jour'; rerender(); } }, 'Par jour'),
+      h('button' + (view === 'semaine' ? '.on' : ''), { onclick: () => { view = 'semaine'; rerender(); } }, 'Par semaine'));
+    const card = h('section.card');
+    if (view === 'jour') {
+      // Une semaine, du lundi au dimanche, avec navigation.
+      const w0 = addDays(ws, 7 * weekOffset);
+      const days = Array.from({ length: 7 }, (_, i) => addDays(w0, i));
+      const cols = days.map((d) => {
+        const l = state.sessions.filter((s) => s.date === d);
+        const [wd, n] = fmtDate(d, { weekday: true }).split(' ');
+        return { label: `${wd} ${n}`, title: fmtDate(d, { weekday: true, year: true }) + (d === t ? ' (aujourd’hui)' : ''), parts: parts(l) };
+      });
+      const totals = days.map((d) => sum(state.sessions.filter((s) => s.date === d)));
+      const total = totals.reduce((a, b) => a + b, 0);
+      const elapsed = days.filter((d) => d <= t).length || 7;
+      const best = Math.max(...totals);
+      const bestDay = days[totals.indexOf(best)];
+      card.append(
+        h('header.card-head', h('h2', 'Temps par jour'), seg),
+        h('div.week-nav',
+          h('button.icon-btn', { 'aria-label': 'Semaine précédente', onclick: () => { weekOffset--; rerender(); } }, icon('left', 18)),
+          h('b', weekOffset === 0 ? 'Cette semaine' : weekOffset === -1 ? 'Semaine dernière' : `Semaine du ${fmtDate(w0, { weekday: false })}`),
+          h('span.muted', `${fmtDate(w0, { weekday: false })} → ${fmtDate(days[6], { weekday: false })}`),
+          h('button.icon-btn', { 'aria-label': 'Semaine suivante', disabled: weekOffset >= 0, onclick: () => { weekOffset++; rerender(); } }, icon('right', 18)),
+          weekOffset < 0 ? h('button.btn.small', { onclick: () => { weekOffset = 0; rerender(); } }, 'Aujourd’hui') : null),
+        stackedBars(cols, { fmt: fmtMin }),
+        h('p.muted', total
+          ? `Total ${fmtMin(total)} · moyenne ${fmtMin(total / elapsed)} par jour sur ${elapsed} jour${elapsed > 1 ? 's' : ''} · meilleur jour : ${fmtDate(bestDay)} (${fmtMin(best)})`
+          : 'Aucune séance chronométrée cette semaine-là.'));
+    } else {
+      const cols = [];
+      for (let i = 7; i >= 0; i--) {
+        const s0 = addDays(ws, -7 * i), s1 = addDays(s0, 6);
+        cols.push({ label: fmtDate(s0, { weekday: false }), title: `Semaine du ${fmtDate(s0, { weekday: false })}`, parts: parts(state.sessions.filter((s) => s.date >= s0 && s.date <= s1)) });
+      }
+      card.append(h('header.card-head', h('h2', 'Temps par semaine'), seg), stackedBars(cols, { fmt: fmtMin }));
     }
-    root.append(h('section.card', h('h2', 'Temps par semaine'), stackedBars(cols, { fmt: fmtMin }), used.length > 1 ? legend(used.map((u) => ({ name: u.short, color: u.color }))) : null));
+    if (used.length > 1) card.append(legend(used.map((u) => ({ name: u.short, color: u.color }))));
+    root.append(card);
     if (weekS.length) {
       root.append(h('section.card', h('h2', 'Répartition cette semaine'),
         hbars(used.map((u) => ({ label: u.short, color: u.color, value: sum(weekS.filter((s) => s.subject === u.id)), text: fmtMin(sum(weekS.filter((s) => s.subject === u.id))) })).filter((r) => r.value))));
