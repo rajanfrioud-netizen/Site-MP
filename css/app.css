@@ -426,3 +426,12 @@ pre { white-space: pre-wrap; font-size: 12px; overflow: auto; }
 .week-nav .muted { font-size: 13px; }
 .icon-btn:disabled { opacity: .3; cursor: default; }
 @media (max-width: 560px) { .week-nav > .muted { display: none; } }
+
+/* Choix des fiches à réviser */
+.mcard.picked { border-color: var(--s1); box-shadow: 0 0 0 2px var(--s1); }
+.cards-grid.picking .mcard { cursor: pointer; }
+.pick-box { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--muted); font-size: 13px; font-weight: 800; color: #fff; }
+.mcard.picked .pick-box { background: var(--s1); border-color: var(--s1); }
+.pick-bar { position: sticky; bottom: 12px; z-index: 10; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 14px; border-radius: 14px; background: var(--surface); border: 1px solid var(--border); box-shadow: 0 8px 30px rgb(0 0 0 / .18); }
+.btn:disabled { opacity: .45; cursor: default; }
+@media (max-width: 860px) { .pick-bar { bottom: calc(76px + env(safe-area-inset-bottom)); } }

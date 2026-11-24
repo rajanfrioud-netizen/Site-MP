@@ -6,6 +6,20 @@ import { editMistake, showImage } from '../forms.js';
 
 let filter = { subject: '', q: '', only: '' };
 let session = null; // { queue, index, revealed, done, again }
+let picking = false; // mode « choisir les fiches »
+const picked = new Set(); // identifiants des fiches cochées
+
+/** Lance une séance sur les fiches cochées, qu'elles soient dues ou non. */
+function reviseSelection() {
+  const order = (c) => [c.gravity === 'Critique' ? 0 : 1, c.nextReview || ''];
+  const q = state.mistakes.filter((c) => picked.has(c.id))
+    .sort((a, b) => order(a)[0] - order(b)[0] || order(a)[1].localeCompare(order(b)[1]));
+  if (!q.length) return;
+  session = { queue: q, index: 0, revealed: false, stats: { again: 0, hard: 0, good: 0, easy: 0 }, total: q.length, custom: true };
+  picking = false;
+  if (location.hash === '#/erreurs/revision') save({ touch: false }); // déjà sur la page : on redessine
+  else location.hash = '#/erreurs/revision';
+}
 
 function photoEl(card, side) {
   if (!card['has' + side]) return null;
@@ -24,6 +38,7 @@ export function erreurs(root, sub) {
   if (sub === 'a-reecrire') filter = { subject: '', q: '', only: 'leech' };
   const cards = state.mistakes;
   const due = dueQueue(cards);
+  for (const id of picked) if (!cards.some((c) => c.id === id)) picked.delete(id);
 
   root.append(h('header.page-head', h('h1', 'Carnet d’erreurs'),
     h('button.btn.primary', { onclick: () => editMistake() }, icon('plus', 16), 'Nouvelle fiche')));
@@ -53,7 +68,8 @@ export function erreurs(root, sub) {
     subjects.map((s) => chip(s.short, filter.subject === s.id, () => (filter.subject = filter.subject === s.id ? '' : s.id))),
     chip('Critiques', filter.only === 'crit', () => (filter.only = filter.only === 'crit' ? '' : 'crit')),
     chip(`À réécrire (${cards.filter((c) => isLeech(c) || isVague(c)).length})`, filter.only === 'leech', () => (filter.only = filter.only === 'leech' ? '' : 'leech')),
-    search));
+    search,
+    h('button.chip' + (picking ? '.on' : ''), { onclick: () => { picking = !picking; redraw(); } }, picking ? 'Terminer le choix' : '☑ Choisir les fiches à réviser')));
 
   const q = filter.q.toLowerCase();
   const list = cards.filter((c) =>
@@ -69,14 +85,28 @@ export function erreurs(root, sub) {
   if (!cards.length) root.append(empty('Chaque erreur de DS, de khôlle ou de TD mérite une fiche : la question au recto, la méthode au verso. Le site te les représente juste avant que tu les oublies.'));
   else if (!list.length) root.append(empty('Aucune fiche ne correspond.'));
 
-  root.append(h('div.cards-grid', list.map((c) => h('article.mcard', { onclick: (e) => !e.target.closest('img') && editMistake(c), tabindex: 0, onkeydown: (e) => e.key === 'Enter' && editMistake(c) },
-    h('header', subjTag(c.subject), c.gravity === 'Critique' ? h('span.pill.bad', 'Critique') : null,
+  const toggle = (c) => { picked.has(c.id) ? picked.delete(c.id) : picked.add(c.id); redraw(); };
+  const open = (c) => (picking ? toggle(c) : editMistake(c));
+  root.append(h('div.cards-grid' + (picking ? '.picking' : ''), list.map((c) => h('article.mcard' + (picked.has(c.id) ? '.picked' : ''), {
+    onclick: (e) => !e.target.closest('img') && open(c), tabindex: 0, onkeydown: (e) => (e.key === 'Enter' || (picking && e.key === ' ')) && (e.preventDefault(), open(c)),
+    'aria-pressed': picking ? String(picked.has(c.id)) : null },
+    h('header', picking ? h('span.pick-box', { 'aria-hidden': 'true' }, picked.has(c.id) ? '✓' : '') : null, subjTag(c.subject), c.gravity === 'Critique' ? h('span.pill.bad', 'Critique') : null,
       isLeech(c) ? h('span.pill.mid', `ratée ${c.lapses}×`) : null, isVague(c) ? h('span.pill.mid', 'réponse vague') : null,
       h('span.grow'), h('span.lvl', { title: levelLabel(c.srsLevel) }, `N${c.srsLevel || 0}`)),
     h('h3', c.title || 'Sans titre'),
     rich(c.description, 'rich.clamp'),
     h('footer', isDue(c) ? h('span.due', diffDays(today(), c.nextReview) > 0 ? `en retard de ${diffDays(today(), c.nextReview)} j` : 'à revoir aujourd’hui') : h('span.muted', 'revue ' + fmtRel(c.nextReview)),
       (c.hasFront || c.hasBack) ? h('span.muted', '📷') : null)))));
+
+  if (picking || picked.size) {
+    const shown = list.filter((c) => !picked.has(c.id));
+    root.append(h('div.pick-bar', { role: 'region', 'aria-label': 'Fiches choisies' },
+      h('b', `${picked.size} fiche${picked.size > 1 ? 's' : ''} choisie${picked.size > 1 ? 's' : ''}`),
+      picking && shown.length ? h('button.btn.small', { onclick: () => { shown.forEach((c) => picked.add(c.id)); redraw(); } }, `Cocher les ${list.length} affichées`) : null,
+      picked.size ? h('button.btn.small', { onclick: () => { picked.clear(); redraw(); } }, 'Tout décocher') : null,
+      h('span.grow'),
+      h('button.btn.primary', { disabled: !picked.size, onclick: reviseSelection }, icon('play', 16), 'Réviser la sélection')));
+  }
 }
 
 function nextDueText(cards) {
@@ -103,7 +133,8 @@ function review(root) {
       s.total ? h('p', `${ok} sue${ok > 1 ? 's' : ''} sur ${s.total} · ${s.stats.hard} hésitante${s.stats.hard > 1 ? 's' : ''} · ${s.stats.again} ratée${s.stats.again > 1 ? 's' : ''}`) : h('p.muted', nextDueText(state.mistakes)),
       left ? h('p.muted', `Il reste ${left} fiche${left > 1 ? 's' : ''} en attente.`) : null,
       h('div.row.center',
-        left ? h('button.btn.primary', { onclick: () => { session = null; save({ touch: false }); } }, 'Continuer') : null,
+        s.custom && picked.size ? h('button.btn.primary', { onclick: reviseSelection }, 'Revoir la sélection') : null,
+        left ? h('button.btn' + (s.custom ? '' : '.primary'), { onclick: () => { session = null; save({ touch: false }); } }, s.custom ? 'Fiches dues' : 'Continuer') : null,
         h('a.btn', { href: '#/erreurs' }, 'Retour au carnet'), h('a.btn', { href: '#/' }, 'Accueil'))));
     return;
   }
